@@ -27,6 +27,15 @@ function getSlugFromFilename(filename: string): string {
   return filename.replace(/\.md$/, "");
 }
 
+/** gray-matter parses bare YAML dates into Date objects — convert back to YYYY-MM-DD string */
+function toDateString(value: unknown): string {
+  if (!value) return "";
+  if (value instanceof Date) {
+    return value.toISOString().slice(0, 10); // "2026-03-28"
+  }
+  return String(value);
+}
+
 export function getAllBlogPosts(): BlogPostMeta[] {
   if (!fs.existsSync(CONTENT_DIR)) return [];
 
@@ -42,7 +51,7 @@ export function getAllBlogPosts(): BlogPostMeta[] {
       title: data.title ?? "",
       description: data.description ?? "",
       category: data.category ?? "Numerology",
-      publishedAt: data.publishedAt ?? "",
+      publishedAt: toDateString(data.publishedAt),
       readTime: data.readTime ?? "10 min read",
       tags: data.tags ?? [],
       author_name: data.author_name ?? "",
@@ -72,7 +81,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     title: data.title ?? "",
     description: data.description ?? "",
     category: data.category ?? "Numerology",
-    publishedAt: data.publishedAt ?? "",
+    publishedAt: toDateString(data.publishedAt),
     readTime: data.readTime ?? "10 min read",
     tags: data.tags ?? [],
     author_name: data.author_name ?? "",
