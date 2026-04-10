@@ -54,6 +54,18 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
       <main style={{ flex: 1 }}>
         <article>
+          {/* Hero image — shown only when admin uploaded one */}
+          {post.ogImage && (
+            <div style={{ width: "100%", maxHeight: "420px", overflow: "hidden", background: "#f1f5f9" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.ogImage}
+                alt={post.title}
+                style={{ width: "100%", maxHeight: "420px", objectFit: "cover", display: "block" }}
+              />
+            </div>
+          )}
+
           {/* Header */}
           <header style={{ borderBottom: "1px solid #e2e8f0", padding: "32px 0 24px" }}>
             <div className="container mx-auto" style={{ padding: "0 16px", maxWidth: "740px" }}>

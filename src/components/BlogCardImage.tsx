@@ -1,6 +1,4 @@
-import type { BlogCategory } from "@/data/blog-posts";
-
-const categoryConfig: Record<BlogCategory, { gradient: string; icon: string }> = {
+const categoryGradients: Record<string, { gradient: string; icon: string }> = {
   Numerology: {
     gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
@@ -19,8 +17,40 @@ const categoryConfig: Record<BlogCategory, { gradient: string; icon: string }> =
   },
 };
 
-export default function BlogCardImage({ category, title }: { category: BlogCategory; title: string }) {
-  const config = categoryConfig[category];
+const fallback = {
+  gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+};
+
+interface Props {
+  category: string;
+  title: string;
+  ogImage?: string;
+}
+
+export default function BlogCardImage({ category, title, ogImage }: Props) {
+  // If admin uploaded a real image — show it
+  if (ogImage) {
+    return (
+      <div style={{ height: "180px", overflow: "hidden", position: "relative" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={ogImage}
+          alt={title}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+          }}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
+  // Fallback: category gradient with icon
+  const config = categoryGradients[category] ?? fallback;
   return (
     <div
       style={{
@@ -33,7 +63,6 @@ export default function BlogCardImage({ category, title }: { category: BlogCateg
         overflow: "hidden",
       }}
     >
-      {/* Decorative circles */}
       <div
         style={{
           position: "absolute",
@@ -56,7 +85,6 @@ export default function BlogCardImage({ category, title }: { category: BlogCateg
           left: "20px",
         }}
       />
-      {/* Icon */}
       <svg
         width="48"
         height="48"

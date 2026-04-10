@@ -10,6 +10,7 @@ interface BlogCardPost {
   category: string;
   readTime: string;
   publishedAt: string;
+  ogImage?: string;
 }
 
 interface BlogCardProps {
@@ -40,7 +41,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.05)";
       }}
     >
-      <BlogCardImage category={post.category} title={post.title} />
+      <BlogCardImage category={post.category} title={post.title} ogImage={post.ogImage} />
       <div style={{ padding: "20px" }}>
         <span
           style={{
