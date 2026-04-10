@@ -8,6 +8,13 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Required for Netlify Identity email confirmation links to work
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+  conditions = {Language = ["en"]}
+
 # Netlify Identity — required for Decap CMS auth
 [[headers]]
   for = "/admin/*"

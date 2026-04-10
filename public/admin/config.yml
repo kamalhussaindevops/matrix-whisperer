@@ -9,8 +9,8 @@ backend:
 media_folder: "public/blog/images"
 public_folder: "/blog/images"
 
-# Show unpublished drafts in the editor
-publish_mode: editorial_workflow
+# editorial_workflow disabled — re-enable after Git Gateway is confirmed working
+# publish_mode: editorial_workflow
 
 collections:
 
