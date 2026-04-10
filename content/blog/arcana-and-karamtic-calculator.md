@@ -8,5 +8,6 @@ tags:
   - sdsadsa
 author_name: DestinyMatrix Team
 author_role: Numerology Writer
+ogImage: /blog/images/chatgpt-image-apr-1-2026-03_46_47-am.png
 ---
 sdasdasds sdasdasdasd sdas
