@@ -1,0 +1,18 @@
+{
+  "hero": {
+    "title": "Free Destiny Matrix Calculator",
+    "subtitle": "Discover your life purpose, talents, and karmic patterns through your birth date",
+    "ctaText": "Calculate My Matrix"
+  },
+  "whatIsMatrix": {
+    "title": "What is the Destiny Matrix?",
+    "body": "The Destiny Matrix is a modern numerological system that maps your birth date onto a grid of 22 archetypal energies. Each position in the matrix reveals a different dimension of your life — your core talents, karmic lessons, relationship patterns, financial potential, and life purpose. Unlike simple numerology, the matrix reads how these energies interact with each other, giving you a complete picture of your personal blueprint.",
+    "ctaText": "Learn More",
+    "ctaLink": "/learn/what-is-destiny-matrix"
+  },
+  "cta": {
+    "title": "Ready to Discover Your Matrix?",
+    "subtitle": "Join thousands of people who use their Destiny Matrix for clearer decisions and deeper self-understanding.",
+    "buttonText": "Calculate for Free"
+  }
+}

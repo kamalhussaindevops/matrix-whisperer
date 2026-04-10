@@ -1,0 +1,112 @@
+# Decap CMS — DestinyMatrix content schema
+# Admin URL: https://yoursite.netlify.app/admin
+
+backend:
+  name: git-gateway          # Uses Netlify Identity + Git Gateway
+  branch: main               # Branch to commit to
+
+# Where uploaded images are stored in the repo
+media_folder: "public/blog/images"
+public_folder: "/blog/images"
+
+# Show unpublished drafts in the editor
+publish_mode: editorial_workflow
+
+collections:
+
+  # ── BLOG POSTS ─────────────────────────────────────────────────────────────
+  - name: "blog"
+    label: "Blog Posts"
+    label_singular: "Blog Post"
+    folder: "content/blog"
+    create: true
+    delete: true
+    slug: "{{slug}}"           # filename = URL slug
+    preview_path: "/blog/{{slug}}"
+    fields:
+      - { name: title,       label: "Title",       widget: string }
+      - { name: description, label: "Description (used in cards & SEO)", widget: text }
+      - name: category
+        label: "Category"
+        widget: select
+        options:
+          - { label: "Numerology",     value: "Numerology" }
+          - { label: "Compatibility",  value: "Compatibility" }
+          - { label: "Forecasting",    value: "Forecasting" }
+          - { label: "Spirituality",   value: "Spirituality" }
+      - { name: publishedAt, label: "Publish Date", widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { name: readTime,    label: "Read Time (e.g. 8 min read)", widget: string, default: "8 min read" }
+      - name: tags
+        label: "Tags"
+        widget: list
+        hint: "Press Enter after each tag"
+      - name: author_name
+        label: "Author Name"
+        widget: string
+        default: "DestinyMatrix Team"
+      - name: author_role
+        label: "Author Role"
+        widget: string
+        default: "Numerology Writer"
+      - name: ogImage
+        label: "Cover Image (optional)"
+        widget: image
+        required: false
+        hint: "Uploaded to /public/blog/images/"
+      - name: body
+        label: "Article Content"
+        widget: markdown
+        hint: "Full article. Use ## for section headings, ### for sub-headings."
+
+  # ── HOMEPAGE CONTENT ───────────────────────────────────────────────────────
+  - name: "pages"
+    label: "Pages"
+    files:
+
+      - name: "homepage"
+        label: "Homepage"
+        file: "content/pages/homepage.json"
+        fields:
+          - label: "Hero Section"
+            name: hero
+            widget: object
+            fields:
+              - { name: title,    label: "Main Heading",    widget: string }
+              - { name: subtitle, label: "Subheading",      widget: text }
+              - { name: ctaText,  label: "Button Text",     widget: string }
+
+          - label: "What is Matrix Section"
+            name: whatIsMatrix
+            widget: object
+            fields:
+              - { name: title,   label: "Section Title",  widget: string }
+              - { name: body,    label: "Body Text",       widget: text }
+              - { name: ctaText, label: "Link Text",       widget: string }
+              - { name: ctaLink, label: "Link URL",        widget: string }
+
+          - label: "Bottom CTA Section"
+            name: cta
+            widget: object
+            fields:
+              - { name: title,      label: "CTA Heading",     widget: string }
+              - { name: subtitle,   label: "CTA Subheading",  widget: string }
+              - { name: buttonText, label: "Button Text",      widget: string }
+
+      - name: "footer"
+        label: "Footer"
+        file: "content/pages/footer.json"
+        fields:
+          - { name: brandName,        label: "Brand Name",        widget: string }
+          - { name: brandDescription, label: "Brand Description",  widget: text }
+          - { name: copyright,        label: "Copyright Text",     widget: string }
+          - label: "Social Media Links"
+            name: social
+            widget: object
+            fields:
+              - { name: twitter,   label: "X / Twitter URL",  widget: string, required: false }
+              - { name: instagram, label: "Instagram URL",     widget: string, required: false }
+              - { name: facebook,  label: "Facebook URL",      widget: string, required: false }
+              - { name: pinterest, label: "Pinterest URL",     widget: string, required: false }
+              - { name: reddit,    label: "Reddit URL",        widget: string, required: false }
+              - { name: tiktok,    label: "TikTok URL",        widget: string, required: false }
+              - { name: youtube,   label: "YouTube URL",       widget: string, required: false }

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bg2" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1a0f2e"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    <linearGradient id="rose2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e11d48"/>
+      <stop offset="100%" stop-color="#be185d"/>
+    </linearGradient>
+    <linearGradient id="indigo2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="blend2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e11d48"/>
+      <stop offset="50%" stop-color="#9333ea"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow2l">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="clip-left">
+      <rect x="0" y="0" width="600" height="630"/>
+    </clipPath>
+    <clipPath id="clip-right">
+      <rect x="600" y="0" width="600" height="630"/>
+    </clipPath>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg2)"/>
+  <!-- Background subtle circles -->
+  <circle cx="450" cy="315" r="220" fill="none" stroke="#e11d48" stroke-width="0.5" opacity="0.1"/>
+  <circle cx="750" cy="315" r="220" fill="none" stroke="#4f46e5" stroke-width="0.5" opacity="0.1"/>
+  <!-- Left diamond (rose) -->
+  <g filter="url(#glow2)" opacity="0.7">
+    <polygon points="450,135 630,315 450,495 270,315" fill="none" stroke="#e11d48" stroke-width="2"/>
+  </g>
+  <polygon points="450,185 590,315 450,445 310,315" fill="none" stroke="#e11d48" stroke-width="1" opacity="0.4"/>
+  <polygon points="450,225 555,315 450,405 345,315" fill="none" stroke="#e11d48" stroke-width="0.8" opacity="0.3"/>
+  <!-- Right diamond (indigo) -->
+  <g filter="url(#glow2)" opacity="0.7">
+    <polygon points="750,135 930,315 750,495 570,315" fill="none" stroke="#4f46e5" stroke-width="2"/>
+  </g>
+  <polygon points="750,185 890,315 750,445 610,315" fill="none" stroke="#4f46e5" stroke-width="1" opacity="0.4"/>
+  <polygon points="750,225 855,315 750,405 645,315" fill="none" stroke="#4f46e5" stroke-width="0.8" opacity="0.3"/>
+  <!-- Overlap region - blended glow -->
+  <g filter="url(#glow2l)" opacity="0.5">
+    <polygon points="600,215 660,315 600,415 540,315" fill="url(#blend2)" opacity="0.15"/>
+  </g>
+  <polygon points="600,215 660,315 600,415 540,315" fill="none" stroke="url(#blend2)" stroke-width="1.5" opacity="0.6" filter="url(#glow2)"/>
+  <!-- Connection lines between diamonds -->
+  <g stroke="url(#blend2)" stroke-width="0.8" opacity="0.3" filter="url(#glow2)">
+    <line x1="450" y1="135" x2="750" y2="135"/>
+    <line x1="450" y1="495" x2="750" y2="495"/>
+    <line x1="450" y1="315" x2="750" y2="315"/>
+  </g>
+  <!-- Orbiting dots on left diamond -->
+  <circle cx="450" cy="135" r="4" fill="#e11d48" filter="url(#glow2)" opacity="0.9"/>
+  <circle cx="630" cy="315" r="3" fill="#e11d48" filter="url(#glow2)" opacity="0.7"/>
+  <circle cx="450" cy="495" r="4" fill="#e11d48" filter="url(#glow2)" opacity="0.9"/>
+  <circle cx="270" cy="315" r="3" fill="#e11d48" filter="url(#glow2)" opacity="0.7"/>
+  <!-- Orbiting dots on right diamond -->
+  <circle cx="750" cy="135" r="4" fill="#4f46e5" filter="url(#glow2)" opacity="0.9"/>
+  <circle cx="930" cy="315" r="3" fill="#4f46e5" filter="url(#glow2)" opacity="0.7"/>
+  <circle cx="750" cy="495" r="4" fill="#4f46e5" filter="url(#glow2)" opacity="0.9"/>
+  <circle cx="570" cy="315" r="3" fill="#4f46e5" filter="url(#glow2)" opacity="0.7"/>
+  <!-- Center blend point -->
+  <circle cx="600" cy="315" r="5" fill="#9333ea" filter="url(#glow2l)" opacity="0.9"/>
+  <!-- Decorative arcs -->
+  <path d="M450,135 Q600,80 750,135" fill="none" stroke="url(#blend2)" stroke-width="0.8" opacity="0.25"/>
+  <path d="M450,495 Q600,550 750,495" fill="none" stroke="url(#blend2)" stroke-width="0.8" opacity="0.25"/>
+  <!-- Subtle particle dots -->
+  <g fill="#9333ea" opacity="0.3">
+    <circle cx="540" cy="200" r="1.5"/>
+    <circle cx="660" cy="200" r="1.5"/>
+    <circle cx="540" cy="430" r="1.5"/>
+    <circle cx="660" cy="430" r="1.5"/>
+    <circle cx="600" cy="180" r="1"/>
+    <circle cx="600" cy="450" r="1"/>
+  </g>
+</svg>

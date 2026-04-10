@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eef2ff"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="24" fill="url(#bg)"/>
+  <!-- Hair -->
+  <ellipse cx="24" cy="17" rx="13" ry="10" fill="#8B3A1A"/>
+  <!-- Face -->
+  <ellipse cx="24" cy="25" rx="11" ry="12" fill="#F2CBAF"/>
+  <!-- Hair top - short, slightly wavy -->
+  <path d="M12 20 Q13 10 24 9 Q35 10 36 20 Q34 13 24 12 Q14 13 12 20Z" fill="#8B3A1A"/>
+  <path d="M14 16 Q16 12 20 13" stroke="#A04420" stroke-width="0.6" fill="none"/>
+  <path d="M22 12 Q26 11 30 13" stroke="#A04420" stroke-width="0.6" fill="none"/>
+  <!-- Ears -->
+  <ellipse cx="13" cy="25" rx="2" ry="3" fill="#F2CBAF"/>
+  <ellipse cx="35" cy="25" rx="2" ry="3" fill="#F2CBAF"/>
+  <!-- Eyes -->
+  <ellipse cx="20" cy="24" rx="1.8" ry="2" fill="#4A6E8B"/>
+  <ellipse cx="28" cy="24" rx="1.8" ry="2" fill="#4A6E8B"/>
+  <circle cx="20.5" cy="23.4" r="0.6" fill="white"/>
+  <circle cx="28.5" cy="23.4" r="0.6" fill="white"/>
+  <!-- Eyebrows -->
+  <path d="M17 21 Q20 19.5 23 21" stroke="#8B3A1A" stroke-width="1" fill="none"/>
+  <path d="M25 21 Q28 19.5 31 21" stroke="#8B3A1A" stroke-width="1" fill="none"/>
+  <!-- Freckles -->
+  <circle cx="18" cy="27" r="0.5" fill="#C4846A" opacity="0.5"/>
+  <circle cx="19.5" cy="28" r="0.5" fill="#C4846A" opacity="0.5"/>
+  <circle cx="17" cy="28.5" r="0.5" fill="#C4846A" opacity="0.5"/>
+  <circle cx="28.5" cy="27" r="0.5" fill="#C4846A" opacity="0.5"/>
+  <circle cx="30" cy="28" r="0.5" fill="#C4846A" opacity="0.5"/>
+  <circle cx="31" cy="28.5" r="0.5" fill="#C4846A" opacity="0.5"/>
+  <!-- Nose -->
+  <path d="M23 26 Q24 28 25 26" stroke="#E0B59A" stroke-width="0.8" fill="none"/>
+  <!-- Friendly smile -->
+  <path d="M20 30.5 Q24 33 28 30.5" stroke="#C08070" stroke-width="1" fill="none" stroke-linecap="round"/>
+</svg>

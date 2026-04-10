@@ -1,0 +1,677 @@
+/* Inter font loaded via <link> in layout.tsx with display=swap for performance */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ─── shadcn/ui compatibility ─── */
+    --background: #f8f9fc;
+    --foreground: #1a1a2e;
+
+    --card: #ffffff;
+    --card-foreground: #1a1a2e;
+
+    --popover: #ffffff;
+    --popover-foreground: #1a1a2e;
+
+    --primary: #4f46e5;
+    --primary-foreground: #ffffff;
+
+    --secondary: #eef2ff;
+    --secondary-foreground: #4f46e5;
+
+    --muted: #f1f5f9;
+    --muted-foreground: #475569;
+
+    --accent: #e0e7ff;
+    --accent-foreground: #4f46e5;
+
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+
+    --border: #e2e8f0;
+    --input: #cbd5e1;
+    --ring: #4f46e5;
+
+    --radius: 0.75rem; /* 12px — sm */
+
+    /* ─── Design token extensions ─── */
+    --brand-primary:    #4f46e5;
+    --brand-hover:      #4338ca;
+    --brand-deep:       #1e1b4b;
+    --brand-tint:       #e0e7ff;
+    --brand-wash:       #eef2ff;
+
+    --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --hero-trust-badge-bg: rgba(255,255,255,0.2);
+
+    --color-page-bg:         #f8f9fc;
+    --color-card-bg:         #ffffff;
+    --color-testimonial-bg:  #f1f5f9;
+    --color-footer-bg:       #0f172a;
+
+    --color-text-body:         #1a1a2e;
+    --color-text-heading:      #0f172a;
+    --color-text-section-title:#1e1b4b;
+    --color-text-nav:          #334155;
+    --color-text-muted:        #475569;
+    --color-text-subtle:       #64748b;
+    --color-text-footer-body:  #cbd5e1;
+    --color-text-footer-link:  #94a3b8;
+    --color-text-footer-head:  #ffffff;
+
+    --color-border-card:        #eef2ff;
+    --color-border-faq:         #e2e8f0;
+    --color-footer-divider:     #1e293b;
+
+    --color-star:     #fbbf24;
+    --color-error:    #dc2626;
+    --color-disabled: #94a3b8;
+
+    /* ─── Radius tokens ─── */
+    --radius-sm:   0.75rem;  /* 12px — inputs, buttons  */
+    --radius-md:   1.25rem;  /* 20px — testimonial cards, FAQ */
+    --radius-lg:   1.5rem;   /* 24px — feature cards, calc card */
+    --radius-xl:   2rem;     /* 32px — hero, testimonial wrapper */
+    --radius-pill: 999px;    /* badges, outline buttons */
+
+    /* ─── Shadow tokens ─── */
+    --shadow-card:        0 4px 12px rgba(0,0,0,0.05);
+    --shadow-card-hover:  0 20px 25px -12px rgba(0,0,0,0.1);
+    --shadow-calculator:  0 20px 35px -10px rgba(0,0,0,0.2);
+    --shadow-testimonial: 0 2px 8px rgba(0,0,0,0.04);
+
+    /* ─── Sidebar (shadcn sidebar compatibility) ─── */
+    --sidebar-background:          #f8f9fc;
+    --sidebar-foreground:          #1a1a2e;
+    --sidebar-primary:             #4f46e5;
+    --sidebar-primary-foreground:  #ffffff;
+    --sidebar-accent:              #eef2ff;
+    --sidebar-accent-foreground:   #4f46e5;
+    --sidebar-border:              #e2e8f0;
+    --sidebar-ring:                #4f46e5;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-page-bg);
+    color: var(--color-text-body);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  /* Minimum touch target size for mobile (44px per WCAG) */
+  button, a, select, input[type="checkbox"], input[type="radio"] {
+    min-height: 44px;
+  }
+
+  select, input, textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--color-text-heading);
+    line-height: 1.25;
+  }
+
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: 1.875rem; font-weight: 700; }
+  h3 { font-size: 1.35rem; font-weight: 600; }
+
+  p { color: var(--color-text-body); line-height: 1.5; }
+
+  ::placeholder { color: var(--color-text-subtle); }
+
+  *:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    border-color: var(--brand-primary);
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+}
+
+/* ─── Layout utilities ─────────────────────────────────── */
+@layer utilities {
+  .font-display {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .font-body {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Section layout pattern */
+  .section {
+    padding: 48px 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .section-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--color-text-section-title);
+    margin-bottom: 16px;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--color-text-muted);
+    max-width: 700px;
+    margin: 0 auto 48px;
+    line-height: 1.65;
+  }
+
+  /* Feature card hover */
+  @media (prefers-reduced-motion: no-preference) {
+    .feature-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    .btn-primary {
+      transition: background-color 0.2s ease;
+    }
+    .btn-outline-pill {
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+  }
+
+  /* Number badge (guide cards) */
+  .num-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--brand-tint);
+    color: var(--brand-primary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 4px 10px;
+  }
+
+  /* Hero trust badge pills */
+  .trust-pill {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.2);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 999px;
+    padding: 6px 14px;
+  }
+
+  /* Gradient utilities kept for calculator/viz components */
+  .bg-gradient-primary {
+    background: var(--hero-gradient);
+  }
+  .text-gradient-primary {
+    background: var(--hero-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Shadow utilities */
+  .shadow-card     { box-shadow: var(--shadow-card); }
+  .shadow-calc     { box-shadow: var(--shadow-calculator); }
+  .shadow-soft     { box-shadow: var(--shadow-testimonial); }
+  .shadow-card-hover { box-shadow: var(--shadow-card-hover); }
+
+  /* Hide scrollbar for horizontal scroll tabs on mobile */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ─── Premium Card Effects ─────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .testimonial-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .testimonial-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+  }
+}
+
+/* ─── Page Loader ──────────────────────────────────────── */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #f8f9fc;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.loader-icon {
+  animation: loader-breathe 1.8s ease-in-out infinite;
+}
+.loader-octagon {
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: loader-draw 1s ease forwards;
+}
+.loader-diamond {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: loader-draw 1s ease 0.15s forwards;
+}
+.loader-center {
+  animation: loader-pulse 1s ease-in-out infinite alternate;
+}
+@keyframes loader-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes loader-pulse {
+  0% { opacity: 0.5; r: 6; }
+  100% { opacity: 1; r: 9; }
+}
+@keyframes loader-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.loader-brand {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1e1b4b;
+  margin: 0;
+  opacity: 0;
+  animation: loader-fadein 0.4s ease 0.2s forwards;
+}
+@keyframes loader-fadein {
+  to { opacity: 1; }
+}
+.loader-bar-track {
+  width: 120px;
+  height: 3px;
+  border-radius: 3px;
+  background: #e0e7ff;
+  overflow: hidden;
+}
+.loader-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.25s ease;
+}
+
+/* ─── Footer ───────────────────────────────────────────── */
+.footer-root {
+  background: #0B0F19;
+  color: #E5E7EB;
+  margin-top: auto;
+  position: relative;
+}
+.footer-gradient-border {
+  height: 2px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+  background-size: 200% 100%;
+  animation: footer-gradient-shift 6s linear infinite;
+}
+@keyframes footer-gradient-shift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.footer-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 32px 0 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.footer-cta-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+}
+.footer-cta-desc {
+  font-size: 0.85rem;
+  color: #9CA3AF;
+  margin: 0;
+}
+.footer-cta-buttons {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.footer-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 20px;
+  background: #667eea;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.footer-btn-primary:hover { background: #5a6fd6; }
+.footer-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 20px;
+  background: transparent;
+  color: #E5E7EB;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.footer-btn-outline:hover {
+  border-color: #667eea;
+  color: #fff;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(4, 1fr);
+  gap: 32px;
+  padding: 36px 0 32px;
+}
+.footer-logo {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+.footer-brand-desc {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #9CA3AF;
+  margin: 10px 0 16px;
+  max-width: 240px;
+}
+.footer-social {
+  display: flex;
+  gap: 10px;
+}
+.footer-social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  color: #9CA3AF;
+  transition: color 0.2s, background 0.2s, transform 0.2s;
+}
+.footer-social-icon:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.12);
+  transform: scale(1.08);
+}
+.footer-col-heading {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+}
+.footer-col-heading-mobile {
+  display: none;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.footer-link {
+  font-size: 0.8rem;
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color 0.2s;
+  line-height: 1.4;
+}
+.footer-link:hover {
+  color: #fff;
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 0.72rem;
+  color: #6B7280;
+}
+.footer-chevron {
+  transition: transform 0.25s;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .footer-cta {
+    flex-direction: column;
+    text-align: center;
+    padding: 28px 0 24px;
+  }
+  .footer-cta-buttons {
+    justify-content: center;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 24px 0 20px;
+  }
+  .footer-brand {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 4px;
+  }
+  .footer-brand-desc { margin-left: auto; margin-right: auto; }
+  .footer-social { justify-content: center; }
+  .footer-col-heading-desktop { display: none; }
+  .footer-col-heading-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+    padding: 14px 0;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.03em;
+  }
+  .footer-links {
+    overflow: hidden;
+    max-height: 0;
+    padding: 0;
+    transition: max-height 0.3s, padding 0.3s;
+  }
+  .footer-links[data-open="true"] {
+    max-height: 300px;
+    padding: 8px 0 12px;
+  }
+}
+
+/* ─── Shimmer skeleton animation ──────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ─── Calculator blog section ──────────────────────────────── */
+.calc-blog-section {
+  background: #ffffff;
+  border: 1px solid #eef2ff;
+  border-radius: 24px;
+  padding: 32px;
+  margin-top: 48px;
+}
+
+.calc-blog-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+.calc-blog-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e1b4b;
+  margin: 24px 0 10px;
+}
+
+.calc-blog-section p {
+  color: #475569;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .calc-blog-section {
+    padding: 20px 16px;
+  }
+}
+
+/* ─── Guide CTA link ───────────────────────────────────────── */
+.guide-cta-link {
+  color: #4f46e5;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+  border-bottom: 2px solid #e0e7ff;
+  padding-bottom: 2px;
+  transition: border-color 0.2s, color 0.2s;
+  display: inline-block;
+}
+
+.guide-cta-link:hover {
+  color: #4338ca;
+  border-color: #4f46e5;
+}
+
+/* On mobile: full-width tap target */
+@media (max-width: 640px) {
+  .guide-cta-link {
+    display: block;
+    text-align: center;
+    padding: 12px 0;
+    border-bottom: none;
+    background: #eef2ff;
+    border-radius: 12px;
+  }
+}
+
+/* ─── Active/pressed button states — visibility fix ─────────── */
+button:active,
+a[role="button"]:active {
+  transform: scale(0.98);
+}
+
+/* Tab active — NEVER transparent text */
+.tab-btn.active {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* ─── Mobile-first: single column on narrow screens ─────────── */
+@media (max-width: 480px) {
+  .grid-cols-auto {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ─── Touch scroll containers ────────────────────────────────── */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+}
+
+/* ─── Blog card line clamp ────────────────────────────────────── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ─── Blog constellation background (kept for blog hero) ────── */
+.bg-constellation {
+  background-image: radial-gradient(circle at 1px 1px, rgba(79,70,229,0.06) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+/* ─── shadow-glow utility ──────────────────────────────────── */
+.shadow-glow {
+  box-shadow: 0 0 0 1px rgba(79,70,229,0.12), 0 4px 16px rgba(79,70,229,0.08);
+}
+
+/* ─── gradient-card background ──────────────────────────────── */
+.bg-gradient-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+}

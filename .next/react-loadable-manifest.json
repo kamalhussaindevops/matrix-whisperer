@@ -1,0 +1,53 @@
+{
+  "..\\node_modules\\jspdf\\dist\\jspdf.es.min.js -> canvg": {
+    "id": 12396,
+    "files": [
+      "static/chunks/bc98253f.768c9eb0ea4752a8.js",
+      "static/chunks/3969.b7a8449e056c0648.js"
+    ]
+  },
+  "..\\node_modules\\jspdf\\dist\\jspdf.es.min.js -> dompurify": {
+    "id": 18848,
+    "files": [
+      "static/chunks/8848.5e9910f31afc2626.js"
+    ]
+  },
+  "..\\node_modules\\jspdf\\dist\\jspdf.es.min.js -> html2canvas": {
+    "id": 24457,
+    "files": [
+      "static/chunks/ad2866b8.1fd5edbd6b1bba26.js"
+    ]
+  },
+  "views\\Calculator.tsx -> @/components/HealthChart": {
+    "id": 74381,
+    "files": [
+      "static/chunks/4381.1d445665a838df34.js"
+    ]
+  },
+  "views\\Calculator.tsx -> @/components/MatrixVisualization": {
+    "id": 35500,
+    "files": [
+      "static/chunks/5500-4660224ef2036205.js"
+    ]
+  },
+  "views\\Calculator.tsx -> html2canvas": {
+    "id": 24457,
+    "files": [
+      "static/chunks/ad2866b8.1fd5edbd6b1bba26.js"
+    ]
+  },
+  "views\\Calculator.tsx -> jspdf": {
+    "id": 53375,
+    "files": [
+      "static/chunks/2f0b94e8.452a2d27023d71da.js",
+      "static/chunks/164f4fb6.e42665eb34d8cd0e.js",
+      "static/chunks/8758.6d2e237b08163e73.js"
+    ]
+  },
+  "views\\Index.tsx -> @/components/Testimonials": {
+    "id": 22890,
+    "files": [
+      "static/chunks/2890.f6c2545efdfd4fe8.js"
+    ]
+  }
+}

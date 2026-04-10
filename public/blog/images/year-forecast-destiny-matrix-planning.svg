@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bg3" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1a1030"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    <linearGradient id="gold3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="purp3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <filter id="glow3">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow3l">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg3)"/>
+  <!-- Outer circle -->
+  <circle cx="600" cy="315" r="250" fill="none" stroke="#d97706" stroke-width="1.5" opacity="0.3" filter="url(#glow3)"/>
+  <circle cx="600" cy="315" r="245" fill="none" stroke="#d97706" stroke-width="0.5" opacity="0.15"/>
+  <!-- Inner circles -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#7c3aed" stroke-width="1" opacity="0.25"/>
+  <circle cx="600" cy="315" r="150" fill="none" stroke="#d97706" stroke-width="0.8" opacity="0.2"/>
+  <circle cx="600" cy="315" r="80" fill="none" stroke="#7c3aed" stroke-width="0.6" opacity="0.2"/>
+  <!-- 12 segment dividers -->
+  <g stroke="#d97706" stroke-width="0.8" opacity="0.2">
+    <line x1="600" y1="65" x2="600" y2="115"/>
+    <line x1="725" y1="87" x2="700" y2="132"/>
+    <line x1="822" y1="165" x2="783" y2="198"/>
+    <line x1="850" y1="315" x2="800" y2="315"/>
+    <line x1="822" y1="465" x2="783" y2="432"/>
+    <line x1="725" y1="543" x2="700" y2="498"/>
+    <line x1="600" y1="565" x2="600" y2="515"/>
+    <line x1="475" y1="543" x2="500" y2="498"/>
+    <line x1="378" y1="465" x2="417" y2="432"/>
+    <line x1="350" y1="315" x2="400" y2="315"/>
+    <line x1="378" y1="165" x2="417" y2="198"/>
+    <line x1="475" y1="87" x2="500" y2="132"/>
+  </g>
+  <!-- Extended segment lines to outer ring -->
+  <g stroke="#d97706" stroke-width="1" opacity="0.15">
+    <line x1="600" y1="65" x2="600" y2="565"/>
+    <line x1="350" y1="315" x2="850" y2="315"/>
+    <line x1="378" y1="165" x2="822" y2="465"/>
+    <line x1="475" y1="87" x2="725" y2="543"/>
+    <line x1="725" y1="87" x2="475" y2="543"/>
+    <line x1="822" y1="165" x2="378" y2="465"/>
+  </g>
+  <!-- 12 month indicator dots on outer ring -->
+  <g filter="url(#glow3)">
+    <circle cx="600" cy="65" r="5" fill="#d97706" opacity="0.9"/>
+    <circle cx="725" cy="87" r="4" fill="#f59e0b" opacity="0.7"/>
+    <circle cx="822" cy="165" r="4" fill="#d97706" opacity="0.7"/>
+    <circle cx="850" cy="315" r="5" fill="#f59e0b" opacity="0.8"/>
+    <circle cx="822" cy="465" r="4" fill="#d97706" opacity="0.7"/>
+    <circle cx="725" cy="543" r="4" fill="#f59e0b" opacity="0.7"/>
+    <circle cx="600" cy="565" r="5" fill="#d97706" opacity="0.9"/>
+    <circle cx="475" cy="543" r="4" fill="#f59e0b" opacity="0.7"/>
+    <circle cx="378" cy="465" r="4" fill="#d97706" opacity="0.7"/>
+    <circle cx="350" cy="315" r="5" fill="#f59e0b" opacity="0.8"/>
+    <circle cx="378" cy="165" r="4" fill="#d97706" opacity="0.7"/>
+    <circle cx="475" cy="87" r="4" fill="#f59e0b" opacity="0.7"/>
+  </g>
+  <!-- Inner ring indicator dots (purple) -->
+  <g filter="url(#glow3)" opacity="0.6">
+    <circle cx="600" cy="115" r="3" fill="#7c3aed"/>
+    <circle cx="700" cy="132" r="3" fill="#a78bfa"/>
+    <circle cx="783" cy="198" r="3" fill="#7c3aed"/>
+    <circle cx="800" cy="315" r="3" fill="#a78bfa"/>
+    <circle cx="783" cy="432" r="3" fill="#7c3aed"/>
+    <circle cx="700" cy="498" r="3" fill="#a78bfa"/>
+    <circle cx="600" cy="515" r="3" fill="#7c3aed"/>
+    <circle cx="500" cy="498" r="3" fill="#a78bfa"/>
+    <circle cx="417" cy="432" r="3" fill="#7c3aed"/>
+    <circle cx="400" cy="315" r="3" fill="#a78bfa"/>
+    <circle cx="417" cy="198" r="3" fill="#7c3aed"/>
+    <circle cx="500" cy="132" r="3" fill="#a78bfa"/>
+  </g>
+  <!-- Timeline arc highlight -->
+  <path d="M600,65 A250,250 0 0,1 822,165" fill="none" stroke="#d97706" stroke-width="3" opacity="0.5" filter="url(#glow3l)"/>
+  <path d="M822,165 A250,250 0 0,1 850,315" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.3" filter="url(#glow3)"/>
+  <!-- Center diamond -->
+  <polygon points="600,275 640,315 600,355 560,315" fill="none" stroke="#d97706" stroke-width="1.5" filter="url(#glow3)" opacity="0.7"/>
+  <circle cx="600" cy="315" r="5" fill="#d97706" filter="url(#glow3l)" opacity="0.8"/>
+  <!-- Decorative dots along timeline -->
+  <g fill="#d97706" opacity="0.2">
+    <circle cx="150" cy="315" r="1.5"/>
+    <circle cx="180" cy="315" r="1"/>
+    <circle cx="210" cy="315" r="1.5"/>
+    <circle cx="1000" cy="315" r="1.5"/>
+    <circle cx="1030" cy="315" r="1"/>
+    <circle cx="1060" cy="315" r="1.5"/>
+  </g>
+</svg>

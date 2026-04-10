@@ -1,0 +1,22 @@
+{
+  "brandName": "DestinyMatrix",
+  "brandDescription": "All-in-one calculator platform designed for clarity and insights — powered by 22 archetypal energies.",
+  "copyright": "© 2026 DestinyMatrix. All rights reserved.",
+  "cta": {
+    "title": "Ready to explore your insights?",
+    "subtitle": "Discover powerful calculators and guides in one place.",
+    "primaryLabel": "Try Calculators",
+    "primaryHref": "/calculator",
+    "secondaryLabel": "Explore Blog",
+    "secondaryHref": "/blog"
+  },
+  "social": {
+    "twitter": "",
+    "instagram": "",
+    "facebook": "",
+    "pinterest": "",
+    "reddit": "",
+    "tiktok": "",
+    "youtube": ""
+  }
+}

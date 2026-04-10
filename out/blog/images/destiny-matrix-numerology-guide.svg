@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bg1" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1a1040"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#667eea"/>
+      <stop offset="100%" stop-color="#764ba2"/>
+    </linearGradient>
+    <filter id="glow1">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow1s">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg1)"/>
+  <!-- Outer circle -->
+  <circle cx="600" cy="315" r="240" fill="none" stroke="#667eea" stroke-width="1.5" opacity="0.3" filter="url(#glow1)"/>
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#764ba2" stroke-width="1" opacity="0.25"/>
+  <circle cx="600" cy="315" r="160" fill="none" stroke="#667eea" stroke-width="1" opacity="0.2"/>
+  <!-- Central diamond -->
+  <polygon points="600,115 800,315 600,515 400,315" fill="none" stroke="url(#g1)" stroke-width="2" filter="url(#glow1)" opacity="0.8"/>
+  <!-- Inner diamond rotated -->
+  <polygon points="600,175 740,315 600,455 460,315" fill="none" stroke="#667eea" stroke-width="1.5" opacity="0.5" filter="url(#glow1)"/>
+  <!-- Cross diamonds -->
+  <polygon points="600,215 685,315 600,415 515,315" fill="none" stroke="#764ba2" stroke-width="1.2" opacity="0.6"/>
+  <!-- Interlocking circles -->
+  <circle cx="600" cy="215" r="60" fill="none" stroke="#667eea" stroke-width="1" opacity="0.35" filter="url(#glow1)"/>
+  <circle cx="600" cy="415" r="60" fill="none" stroke="#667eea" stroke-width="1" opacity="0.35" filter="url(#glow1)"/>
+  <circle cx="500" cy="315" r="60" fill="none" stroke="#764ba2" stroke-width="1" opacity="0.35" filter="url(#glow1)"/>
+  <circle cx="700" cy="315" r="60" fill="none" stroke="#764ba2" stroke-width="1" opacity="0.35" filter="url(#glow1)"/>
+  <!-- Diagonal interlocking circles -->
+  <circle cx="530" cy="245" r="45" fill="none" stroke="#667eea" stroke-width="0.8" opacity="0.25"/>
+  <circle cx="670" cy="245" r="45" fill="none" stroke="#667eea" stroke-width="0.8" opacity="0.25"/>
+  <circle cx="530" cy="385" r="45" fill="none" stroke="#764ba2" stroke-width="0.8" opacity="0.25"/>
+  <circle cx="670" cy="385" r="45" fill="none" stroke="#764ba2" stroke-width="0.8" opacity="0.25"/>
+  <!-- Abstract number symbols as geometric marks -->
+  <g filter="url(#glow1s)" opacity="0.6">
+    <!-- "1" abstraction -->
+    <line x1="320" y1="180" x2="320" y2="220" stroke="#667eea" stroke-width="2"/>
+    <line x1="310" y1="185" x2="320" y2="180" stroke="#667eea" stroke-width="2"/>
+    <!-- "3" abstraction -->
+    <path d="M840,170 Q860,180 840,195 Q860,210 840,220" fill="none" stroke="#764ba2" stroke-width="2"/>
+    <!-- "7" abstraction -->
+    <path d="M280,400 L310,400 L290,440" fill="none" stroke="#667eea" stroke-width="2"/>
+    <!-- "9" abstraction -->
+    <circle cx="890" cy="405" r="10" fill="none" stroke="#764ba2" stroke-width="2"/>
+    <line x1="900" y1="410" x2="900" y2="435" stroke="#764ba2" stroke-width="2"/>
+    <!-- "5" abstraction -->
+    <path d="M200,300 L180,300 L180,315 Q200,315 200,330 Q200,340 180,340" fill="none" stroke="#667eea" stroke-width="1.5" opacity="0.4"/>
+    <!-- "8" abstraction -->
+    <circle cx="1000" cy="290" r="8" fill="none" stroke="#764ba2" stroke-width="1.5" opacity="0.4"/>
+    <circle cx="1000" cy="310" r="9" fill="none" stroke="#764ba2" stroke-width="1.5" opacity="0.4"/>
+  </g>
+  <!-- Corner accent dots -->
+  <circle cx="600" cy="115" r="4" fill="#667eea" filter="url(#glow1s)" opacity="0.9"/>
+  <circle cx="800" cy="315" r="4" fill="#764ba2" filter="url(#glow1s)" opacity="0.9"/>
+  <circle cx="600" cy="515" r="4" fill="#667eea" filter="url(#glow1s)" opacity="0.9"/>
+  <circle cx="400" cy="315" r="4" fill="#764ba2" filter="url(#glow1s)" opacity="0.9"/>
+  <!-- Center dot -->
+  <circle cx="600" cy="315" r="6" fill="#667eea" filter="url(#glow1s)" opacity="0.8"/>
+  <!-- Subtle grid lines -->
+  <g stroke="#667eea" stroke-width="0.3" opacity="0.1">
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="200" y1="0" x2="1000" y2="630"/>
+    <line x1="1000" y1="0" x2="200" y2="630"/>
+  </g>
+</svg>
