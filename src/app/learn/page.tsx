@@ -1,5 +1,6 @@
 import Learn from "@/views/Learn";
 import { buildMetadata } from "@/lib/seo";
+import { getJsonPage } from "@/lib/getPageContent";
 
 export const metadata = buildMetadata({
   title: "Learn Destiny Matrix Numerology",
@@ -17,6 +18,7 @@ export const metadata = buildMetadata({
 });
 
 export default function LearnPage() {
-  return <Learn />;
+  const content = getJsonPage("learn.json");
+  return <Learn content={content} />;
 }
 

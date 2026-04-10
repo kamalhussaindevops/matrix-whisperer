@@ -1,5 +1,6 @@
 import Privacy from "@/views/Privacy";
 import { buildMetadata } from "@/lib/seo";
+import { getJsonPage } from "@/lib/getPageContent";
 
 export const metadata = buildMetadata({
   title: "Destiny Matrix Privacy Policy",
@@ -17,6 +18,7 @@ export const metadata = buildMetadata({
 });
 
 export default function PrivacyPage() {
-  return <Privacy />;
+  const content = getJsonPage("privacy.json");
+  return <Privacy content={content} />;
 }
 

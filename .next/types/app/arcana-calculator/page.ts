@@ -1,4 +1,4 @@
-// File: c:\Users\etopi.DESKTOP-51VUFOC\Downloads\matrix-whisperer-pro-main\src\app\arcana-calculator\page.tsx
+// File: C:\Users\etopi.DESKTOP-51VUFOC\Downloads\matrix-whisperer-pro-main\src\app\arcana-calculator\page.tsx
 import * as entry from '../../../../src/app/arcana-calculator/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

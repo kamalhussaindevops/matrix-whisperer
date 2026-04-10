@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(wc -l /c/Users/etopi.DESKTOP-51VUFOC/Downloads/matrix-whisperer-pro-main/src/views/learn/*.tsx)",
+      "Bash(xargs wc:*)"
     ]
   }
 }

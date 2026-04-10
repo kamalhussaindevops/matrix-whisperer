@@ -1,0 +1,11 @@
+{
+  "heading": "Contact Us",
+  "description": "Have questions or feedback? We'd love to hear from you.",
+  "email": "hello@destinymatrix.com",
+  "responseTime": "We usually respond within 24–48 hours.",
+  "topics": [
+    { "icon": "🧮", "title": "Calculator Questions", "body": "Need help understanding your results or how the matrix works?" },
+    { "icon": "🤝", "title": "Partnerships", "body": "Interested in collaborating or featuring our tools on your platform?" },
+    { "icon": "🐛", "title": "Report an Issue", "body": "Found a bug or something not working as expected?" }
+  ]
+}

@@ -5,28 +5,26 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ArrowRight, Sparkles } from "lucide-react";
 
-const articles = [
-  {
-    title: "What is the Destiny Matrix?",
-    path: "/learn/what-is-destiny-matrix",
-    description: "A complete introduction to the Destiny Matrix system, its origins, and how it works to reveal the energies in your life.",
-    tag: "Introduction",
-  },
-  {
-    title: "Destiny Matrix Number Meanings (1-22)",
-    path: "/learn/number-meanings",
-    description: "Explore the meaning of all 22 archetypal energies used in the Destiny Matrix system. Learn what each number reveals.",
-    tag: "Reference",
-  },
-  {
-    title: "Complete Guide to Reading Your Matrix",
-    path: "/learn/guide",
-    description: "A step-by-step guide to understanding the positions, lines, and intersections in your personal Destiny Matrix.",
-    tag: "Guide",
-  },
+interface Article { title: string; description: string; tag: string; path: string }
+interface LearnContent {
+  heading?: string;
+  subtitle?: string;
+  articles?: Article[];
+  cta?: string;
+}
+
+const defaultArticles: Article[] = [
+  { title: "What is the Destiny Matrix?", description: "A complete introduction to the Destiny Matrix system, its origins, and how it works to reveal the energies in your life.", tag: "Introduction", path: "/learn/what-is-destiny-matrix" },
+  { title: "Destiny Matrix Number Meanings (1-22)", description: "Explore the meaning of all 22 archetypal energies used in the Destiny Matrix system. Learn what each number reveals.", tag: "Reference", path: "/learn/number-meanings" },
+  { title: "Complete Guide to Reading Your Matrix", description: "A step-by-step guide to understanding the positions, lines, and intersections in your personal Destiny Matrix.", tag: "Guide", path: "/learn/guide" },
 ];
 
-const Learn = () => {
+const Learn = ({ content = {} }: { content?: LearnContent }) => {
+  const heading  = content.heading  ?? "Learn About Destiny Matrix";
+  const subtitle = content.subtitle ?? "Educational guides and in-depth articles to help you understand and use the Destiny Matrix system.";
+  const articles = content.articles ?? defaultArticles;
+  const cta      = content.cta      ?? "Try the Free Calculator";
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
@@ -34,11 +32,9 @@ const Learn = () => {
         <section className="border-b border-border py-14 text-center bg-constellation">
           <div className="container mx-auto px-4">
             <h1 className="font-display text-3xl text-foreground sm:text-4xl md:text-5xl">
-              Learn About <span className="text-gradient-primary">Destiny Matrix</span>
+              {heading}
             </h1>
-            <p className="mx-auto mt-4 max-w-lg text-muted-foreground">
-              Educational guides and in-depth articles to help you understand and use the Destiny Matrix system.
-            </p>
+            <p className="mx-auto mt-4 max-w-lg text-muted-foreground">{subtitle}</p>
           </div>
         </section>
 
@@ -70,7 +66,7 @@ const Learn = () => {
             href="/calculator"
             className="inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-primary px-8 text-base font-bold text-primary-foreground shadow-glow hover:scale-105 transition-all"
           >
-            <Sparkles className="h-4 w-4" /> Try the Free Calculator
+            <Sparkles className="h-4 w-4" /> {cta}
           </Link>
         </section>
       </main>

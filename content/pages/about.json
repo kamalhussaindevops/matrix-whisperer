@@ -1,0 +1,18 @@
+{
+  "heading": "About DestinyMatrix",
+  "tagline": "Making ancient wisdom practical for modern life.",
+  "paragraphs": [
+    "DestinyMatrix is a modern numerology platform designed to make the ancient wisdom of the 22 archetypal energies accessible to everyone. We believe self-knowledge is the foundation of a fulfilling life.",
+    "Our free calculator uses established numerological principles to generate your personal Destiny Matrix from your birth date. Every interpretation is carefully crafted to provide meaningful, actionable insights.",
+    "We're committed to building the most accurate, beautiful, and user-friendly Destiny Matrix tool available. Our goal is to combine the depth of traditional numerology with the precision and clarity of modern design."
+  ],
+  "stats": [
+    { "value": "500K+", "label": "Readings Generated" },
+    { "value": "22",    "label": "Archetypal Energies" },
+    { "value": "100%",  "label": "Free to Use" }
+  ],
+  "cta": {
+    "text": "Try the Free Calculator",
+    "href": "/calculator"
+  }
+}

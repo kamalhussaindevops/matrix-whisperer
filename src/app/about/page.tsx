@@ -1,5 +1,6 @@
 import About from "@/views/About";
 import { buildMetadata } from "@/lib/seo";
+import { getJsonPage } from "@/lib/getPageContent";
 
 export const metadata = buildMetadata({
   title: "About Destiny Matrix Platform",
@@ -17,6 +18,7 @@ export const metadata = buildMetadata({
 });
 
 export default function AboutPage() {
-  return <About />;
+  const content = getJsonPage("about.json");
+  return <About content={content} />;
 }
 

@@ -1,5 +1,6 @@
 import WhatIsDestinyMatrix from "@/views/learn/WhatIsDestinyMatrix";
 import { buildMetadata } from "@/lib/seo";
+import { getMarkdownPage } from "@/lib/getPageContent";
 
 export const metadata = buildMetadata({
   title: "What Is Destiny Matrix Numerology",
@@ -16,7 +17,8 @@ export const metadata = buildMetadata({
   path: "/learn/what-is-destiny-matrix",
 });
 
-export default function WhatIsDestinyMatrixPage() {
-  return <WhatIsDestinyMatrix />;
+export default async function WhatIsDestinyMatrixPage() {
+  const content = await getMarkdownPage("what-is-destiny-matrix.md");
+  return <WhatIsDestinyMatrix content={content} />;
 }
 

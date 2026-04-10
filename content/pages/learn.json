@@ -1,0 +1,25 @@
+{
+  "heading": "Learn About Destiny Matrix",
+  "subtitle": "Educational guides and in-depth articles to help you understand and use the Destiny Matrix system.",
+  "articles": [
+    {
+      "title": "What is the Destiny Matrix?",
+      "description": "A complete introduction to the Destiny Matrix system, its origins, and how it works to reveal the energies in your life.",
+      "tag": "Introduction",
+      "path": "/learn/what-is-destiny-matrix"
+    },
+    {
+      "title": "Destiny Matrix Number Meanings (1-22)",
+      "description": "Explore the meaning of all 22 archetypal energies used in the Destiny Matrix system. Learn what each number reveals.",
+      "tag": "Reference",
+      "path": "/learn/number-meanings"
+    },
+    {
+      "title": "Complete Guide to Reading Your Matrix",
+      "description": "A step-by-step guide to understanding the positions, lines, and intersections in your personal Destiny Matrix.",
+      "tag": "Guide",
+      "path": "/learn/guide"
+    }
+  ],
+  "cta": "Try the Free Calculator"
+}

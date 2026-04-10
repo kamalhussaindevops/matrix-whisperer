@@ -15,33 +15,19 @@ const Testimonials = dynamic(() => import("@/components/Testimonials"), {
   loading: () => <div className="shimmer" style={{ height: "400px", borderRadius: "32px", margin: "48px 0" }} />,
 });
 
-const faqs = [
-  {
-    q: "Is the Destiny Matrix Calculator free?",
-    a: "Yes, completely free. Enter your birth date and get your full matrix with health chart, interpretations, and life purpose analysis — no sign up required.",
-  },
-  {
-    q: "What does the calculator include?",
-    a: "A complete matrix with health chart (chakra system), soul comfort zone, talents, money energy, karmic tasks, relationship analysis, life purpose, personal year forecast, and more.",
-  },
-  {
-    q: "How accurate is the Destiny Matrix?",
-    a: "Based on established numerological principles using 22 archetypal energies. It provides valuable self-reflection insights into your strengths, challenges, and life direction.",
-  },
-  {
-    q: "What is the Compatibility Matrix?",
-    a: "It calculates the energy dynamics between two people, showing relationship strengths, challenges, love line compatibility, and growth potential.",
-  },
-  {
-    q: "Can I check my child's matrix?",
-    a: "Yes! Our Child Matrix calculator helps parents understand their child's natural talents, challenges, and best development strategies.",
-  },
+const defaultFaqs = [
+  { q: "Is the Destiny Matrix Calculator free?", a: "Yes, completely free. Enter your birth date and get your full matrix with health chart, interpretations, and life purpose analysis — no sign up required." },
+  { q: "What does the calculator include?", a: "A complete matrix with health chart (chakra system), soul comfort zone, talents, money energy, karmic tasks, relationship analysis, life purpose, personal year forecast, and more." },
+  { q: "How accurate is the Destiny Matrix?", a: "Based on established numerological principles using 22 archetypal energies. It provides valuable self-reflection insights into your strengths, challenges, and life direction." },
+  { q: "What is the Compatibility Matrix?", a: "It calculates the energy dynamics between two people, showing relationship strengths, challenges, love line compatibility, and growth potential." },
+  { q: "Can I check my child's matrix?", a: "Yes! Our Child Matrix calculator helps parents understand their child's natural talents, challenges, and best development strategies." },
 ];
 
 interface HomepageContent {
   hero?: { title?: string; subtitle?: string; ctaText?: string };
   whatIsMatrix?: { title?: string; body?: string; ctaText?: string; ctaLink?: string };
   cta?: { title?: string; subtitle?: string; buttonText?: string };
+  faq?: { q: string; a: string }[];
 }
 
 const Index = ({ content }: { content?: HomepageContent }) => {
@@ -49,6 +35,7 @@ const Index = ({ content }: { content?: HomepageContent }) => {
   const hero = c.hero ?? {};
   const wim = c.whatIsMatrix ?? {};
   const cta = c.cta ?? {};
+  const faqs = c.faq?.length ? c.faq : defaultFaqs;
 
   const [quickResult, setQuickResult] = useState<MatrixResult | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);

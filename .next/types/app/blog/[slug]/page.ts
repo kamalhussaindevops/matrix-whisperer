@@ -1,4 +1,4 @@
-// File: c:\Users\etopi.DESKTOP-51VUFOC\Downloads\matrix-whisperer-pro-main\src\app\blog\[slug]\page.tsx
+// File: C:\Users\etopi.DESKTOP-51VUFOC\Downloads\matrix-whisperer-pro-main\src\app\blog\[slug]\page.tsx
 import * as entry from '../../../../../src/app/blog/[slug]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

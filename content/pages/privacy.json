@@ -1,0 +1,27 @@
+{
+  "heading": "Privacy Policy",
+  "lastUpdated": "March 2026",
+  "intro": "Your privacy matters to us. Here is a plain-language summary of how DestinyMatrix handles your data.",
+  "sections": [
+    {
+      "title": "Data Collection",
+      "body": "The Destiny Matrix Calculator processes your birth date entirely in your browser. We do not store, transmit, or save any personal data you enter. All calculations happen locally on your device."
+    },
+    {
+      "title": "Cookies",
+      "body": "We may use essential cookies for site functionality only. No tracking or advertising cookies are used without your explicit consent."
+    },
+    {
+      "title": "Analytics",
+      "body": "We may collect anonymous, aggregated usage statistics (such as page views) to improve the site. This data cannot be used to identify individual users and is never sold to third parties."
+    },
+    {
+      "title": "Third-Party Services",
+      "body": "We use Netlify for hosting. Their privacy policy applies to infrastructure-level data. We do not share personal data with any advertising networks."
+    },
+    {
+      "title": "Contact",
+      "body": "For privacy-related inquiries, please contact us at hello@destinymatrix.com. We will respond within 48 hours."
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import Guide from "@/views/learn/Guide";
 import { buildMetadata } from "@/lib/seo";
+import { getMarkdownPage } from "@/lib/getPageContent";
 
 export const metadata = buildMetadata({
   title: "How to Read Your Destiny Matrix",
@@ -16,7 +17,8 @@ export const metadata = buildMetadata({
   path: "/learn/guide",
 });
 
-export default function GuidePage() {
-  return <Guide />;
+export default async function GuidePage() {
+  const content = await getMarkdownPage("guide.md");
+  return <Guide content={content} />;
 }
 

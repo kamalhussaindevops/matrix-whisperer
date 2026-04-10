@@ -1,5 +1,6 @@
 import Contact from "@/views/Contact";
 import { buildMetadata } from "@/lib/seo";
+import { getJsonPage } from "@/lib/getPageContent";
 
 export const metadata = buildMetadata({
   title: "Contact Destiny Matrix Support",
@@ -17,6 +18,7 @@ export const metadata = buildMetadata({
 });
 
 export default function ContactPage() {
-  return <Contact />;
+  const content = getJsonPage("contact.json");
+  return <Contact content={content} />;
 }
 

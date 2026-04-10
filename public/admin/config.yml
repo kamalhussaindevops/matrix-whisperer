@@ -122,14 +122,15 @@ collections:
           - numbered-list
 
   # ─────────────────────────────────────────────────────────────
-  #  HOMEPAGE & FOOTER
+  #  ALL SITE PAGES
   # ─────────────────────────────────────────────────────────────
   - name: "pages"
     label: "🏠 Site Content"
     files:
 
+      # ── HOMEPAGE ──────────────────────────────────────────────
       - name: "homepage"
-        label: "Homepage Text"
+        label: "Homepage"
         file: "content/pages/homepage.json"
         fields:
 
@@ -141,17 +142,16 @@ collections:
             fields:
               - { name: title,    label: "Main Heading",  widget: string, hint: "e.g. Free Destiny Matrix Calculator" }
               - { name: subtitle, label: "Subheading",    widget: text,   hint: "1–2 sentences below the heading" }
-              - { name: ctaText,  label: "Button Text",   widget: string, hint: "e.g. Calculate My Matrix", default: "Calculate My Matrix" }
+              - { name: ctaText,  label: "Button Text",   widget: string, default: "Calculate My Matrix" }
 
           - label: "What is the Matrix Section"
             name: whatIsMatrix
             widget: object
             collapsed: true
-            hint: "The explanatory section below the calculator"
             fields:
               - { name: title,   label: "Section Heading", widget: string }
-              - { name: body,    label: "Body Text",        widget: text,   hint: "2–4 sentences explaining the system" }
-              - { name: ctaText, label: "Link Text",        widget: string, hint: "e.g. Learn More →" }
+              - { name: body,    label: "Body Text",        widget: text }
+              - { name: ctaText, label: "Link Text",        widget: string }
               - { name: ctaLink, label: "Link URL",         widget: string, hint: "e.g. /learn/what-is-destiny-matrix" }
 
           - label: "Bottom Call-to-Action"
@@ -161,22 +161,141 @@ collections:
             fields:
               - { name: title,      label: "Heading",     widget: string }
               - { name: subtitle,   label: "Subheading",  widget: string }
-              - { name: buttonText, label: "Button Text", widget: string, default: "Calculate for Free" }
+              - { name: buttonText, label: "Button Text", widget: string }
 
+          - label: "FAQ Questions"
+            name: faq
+            widget: list
+            collapsed: true
+            hint: "Questions shown in the FAQ section on the homepage"
+            fields:
+              - { name: q, label: "Question", widget: string }
+              - { name: a, label: "Answer",   widget: text }
+
+      # ── ABOUT ─────────────────────────────────────────────────
+      - name: "about"
+        label: "About Page"
+        file: "content/pages/about.json"
+        fields:
+          - { name: heading, label: "Page Heading", widget: string, default: "About DestinyMatrix" }
+          - { name: tagline, label: "Tagline (shown in purple under heading)", widget: string, required: false }
+          - name: paragraphs
+            label: "Body Paragraphs"
+            widget: list
+            hint: "Each item is one paragraph. Add or remove paragraphs freely."
+            field: { name: paragraph, label: "Paragraph", widget: text }
+          - name: stats
+            label: "Stats (3 numbers shown in the card)"
+            widget: list
+            collapsed: true
+            hint: "Leave empty to hide the stats card"
+            fields:
+              - { name: value, label: "Number / Value", widget: string, hint: "e.g. 500K+" }
+              - { name: label, label: "Label below number", widget: string, hint: "e.g. Readings Generated" }
+          - label: "Call-to-Action Button"
+            name: cta
+            widget: object
+            collapsed: true
+            fields:
+              - { name: text, label: "Button Text", widget: string, default: "Try the Free Calculator" }
+              - { name: href, label: "Button Link",  widget: string, default: "/calculator" }
+
+      # ── CONTACT ───────────────────────────────────────────────
+      - name: "contact"
+        label: "Contact Page"
+        file: "content/pages/contact.json"
+        fields:
+          - { name: heading,      label: "Page Heading",   widget: string, default: "Contact Us" }
+          - { name: description,  label: "Description",    widget: text }
+          - { name: email,        label: "Email Address",  widget: string, hint: "Shown as a clickable mailto link" }
+          - { name: responseTime, label: "Response Time Note", widget: string, required: false, hint: "e.g. We usually respond within 24–48 hours." }
+          - name: topics
+            label: "Topic Cards (optional)"
+            widget: list
+            collapsed: true
+            hint: "Show 2–4 cards explaining what people can contact you about"
+            fields:
+              - { name: icon,  label: "Emoji Icon", widget: string, hint: "e.g. 🧮", required: false }
+              - { name: title, label: "Card Title",  widget: string }
+              - { name: body,  label: "Card Text",   widget: text }
+
+      # ── PRIVACY ───────────────────────────────────────────────
+      - name: "privacy"
+        label: "Privacy Policy"
+        file: "content/pages/privacy.json"
+        fields:
+          - { name: heading,     label: "Page Heading",  widget: string, default: "Privacy Policy" }
+          - { name: lastUpdated, label: "Last Updated",  widget: string, hint: "e.g. March 2026", required: false }
+          - { name: intro,       label: "Intro Sentence", widget: text, required: false }
+          - name: sections
+            label: "Policy Sections"
+            widget: list
+            hint: "Each section has a heading and a paragraph of text"
+            fields:
+              - { name: title, label: "Section Heading", widget: string }
+              - { name: body,  label: "Section Text",    widget: text }
+
+      # ── LEARN INDEX ───────────────────────────────────────────
+      - name: "learn"
+        label: "Learn Page"
+        file: "content/pages/learn.json"
+        fields:
+          - { name: heading,  label: "Page Heading", widget: string, default: "Learn About Destiny Matrix" }
+          - { name: subtitle, label: "Subtitle",     widget: text }
+          - name: articles
+            label: "Article Cards"
+            widget: list
+            hint: "The 3 article cards shown on the Learn page"
+            fields:
+              - { name: title,       label: "Article Title",       widget: string }
+              - { name: description, label: "Short Description",   widget: text }
+              - { name: tag,         label: "Tag Badge",           widget: string, hint: "e.g. Introduction, Guide, Reference" }
+              - { name: path,        label: "Link URL",            widget: string, hint: "e.g. /learn/what-is-destiny-matrix" }
+          - { name: cta, label: "Bottom Button Text", widget: string, default: "Try the Free Calculator" }
+
+      # ── WHAT IS DESTINY MATRIX ────────────────────────────────
+      - name: "what-is-destiny-matrix"
+        label: "Learn: What is Destiny Matrix (article)"
+        file: "content/pages/what-is-destiny-matrix.md"
+        fields:
+          - { name: title,    label: "Page Title",    widget: string }
+          - { name: subtitle, label: "Subtitle",      widget: string, required: false }
+          - { name: badge,    label: "Badge Label",   widget: string, default: "Introduction" }
+          - { name: ctaText,  label: "CTA Button Text", widget: string, default: "Try the Free Calculator" }
+          - { name: ctaHref,  label: "CTA Link",      widget: string, default: "/calculator" }
+          - name: body
+            label: "Article Content"
+            widget: markdown
+            hint: "Use ## for section headings"
+
+      # ── GUIDE ─────────────────────────────────────────────────
+      - name: "guide"
+        label: "Learn: Reading Guide (article)"
+        file: "content/pages/guide.md"
+        fields:
+          - { name: title,    label: "Page Title",    widget: string }
+          - { name: subtitle, label: "Subtitle",      widget: string, required: false }
+          - { name: badge,    label: "Badge Label",   widget: string, default: "Guide" }
+          - { name: ctaText,  label: "CTA Button Text", widget: string, default: "Try the Free Calculator" }
+          - { name: ctaHref,  label: "CTA Link",      widget: string, default: "/calculator" }
+          - name: body
+            label: "Article Content"
+            widget: markdown
+            hint: "Use ## for section headings, **bold** for key terms"
+
+      # ── FOOTER ────────────────────────────────────────────────
       - name: "footer"
         label: "Footer & Social Links"
         file: "content/pages/footer.json"
         fields:
-
-          - { name: brandName,        label: "Brand Name",        widget: string, default: "DestinyMatrix" }
-          - { name: brandDescription, label: "Tagline",           widget: text,   hint: "Short description shown under the logo" }
-          - { name: copyright,        label: "Copyright Text",    widget: string, hint: "e.g. © 2026 DestinyMatrix. All rights reserved." }
-
+          - { name: brandName,        label: "Brand Name",     widget: string, default: "DestinyMatrix" }
+          - { name: brandDescription, label: "Tagline",        widget: text,   hint: "Short description shown under the logo" }
+          - { name: copyright,        label: "Copyright Text", widget: string, hint: "e.g. © 2026 DestinyMatrix. All rights reserved." }
           - label: "Social Media Links"
             name: social
             widget: object
             collapsed: false
-            hint: "Paste the full URL for each platform you use. Leave blank to hide the icon."
+            hint: "Paste the full URL for each platform. Leave blank to hide the icon."
             fields:
               - { name: twitter,   label: "X / Twitter URL",  widget: string, required: false, hint: "https://twitter.com/yourhandle" }
               - { name: instagram, label: "Instagram URL",    widget: string, required: false, hint: "https://instagram.com/yourhandle" }
