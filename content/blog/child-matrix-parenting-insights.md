@@ -1,13 +1,19 @@
 ---
-title: "Child Matrix Parenting Insights for Talent and Emotional Support"
-description: "Use child matrix numerology to support your child's talents, communication style, emotional regulation, and long-term confidence."
-category: "Numerology"
-publishedAt: "2026-03-14"
-readTime: "12 min read"
-tags: ["child matrix", "parenting", "talent development", "family dynamics", "emotional support"]
-author_name: "Sofia Bennett"
-author_role: "Family Numerology Writer"
-ogImage: "/blog/images/child-matrix-parenting-insights.jpg"
+title: Child Matrix Parenting Insights for Talent and Emotional Support
+description: Use child matrix numerology to support your child's talents,
+  communication style, emotional regulation, and long-term confidence.
+category: Numerology
+publishedAt: 2026-03-14
+readTime: 12 min read
+author_name: Sofia Bennett
+author_role: Family Numerology Writer
+tags:
+  - child matrix
+  - parenting
+  - talent development
+  - family dynamics
+  - emotional support
+ogImage: /blog/images/untitled-design-2-.png
 ---
 
 ## From Labels to Supportive Parenting Design
