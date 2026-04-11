@@ -1,13 +1,19 @@
 ---
-title: "Matrix Comparison for Partners, Friends, and Small Teams"
-description: "Apply matrix comparison to couples, friendships, and teams to improve role clarity, communication, and collaborative performance."
-category: "Compatibility"
-publishedAt: "2026-03-11"
-readTime: "11 min read"
-tags: ["matrix comparison", "team dynamics", "relationship clarity", "communication", "role alignment"]
-author_name: "Chris Alvaro"
-author_role: "Collaboration Systems Editor"
-ogImage: "/blog/images/matrix-comparison-for-partners-and-teams.jpg"
+title: Matrix Comparison for Partners, Friends, and Small Teams
+description: Apply matrix comparison to couples, friendships, and teams to
+  improve role clarity, communication, and collaborative performance.
+category: Compatibility
+publishedAt: 2026-03-11
+readTime: 11 min read
+author_name: Chris Alvaro
+author_role: Collaboration Systems Editor
+tags:
+  - matrix comparison
+  - team dynamics
+  - relationship clarity
+  - communication
+  - role alignment
+ogImage: /blog/images/untitled-design-2-.png
 ---
 
 ## Comparison as Clarity, Not Competition
