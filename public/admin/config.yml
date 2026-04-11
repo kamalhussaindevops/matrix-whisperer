@@ -6,7 +6,7 @@ backend:
 media_folder: "public/blog/images"
 public_folder: "/blog/images"
 
-# Nice preview of each post in the list
+# Slug settings — clean URLs from titles
 slug:
   encoding: "ascii"
   clean_accents: true
@@ -30,19 +30,28 @@ collections:
 
     # Sort newest first in list view
     sortable_fields: ["publishedAt", "title", "category"]
+
+    # Filter by category
     view_filters:
-      - label: "Numerology"
+      - label: "🔢 Numerology"
         field: category
         pattern: "Numerology"
-      - label: "Compatibility"
+      - label: "💑 Compatibility"
         field: category
         pattern: "Compatibility"
-      - label: "Forecasting"
+      - label: "📅 Forecasting"
         field: category
         pattern: "Forecasting"
-      - label: "Spirituality"
+      - label: "✨ Spirituality"
         field: category
         pattern: "Spirituality"
+
+    # Group by category
+    view_groups:
+      - label: "By Category"
+        field: category
+      - label: "By Author"
+        field: author_name
 
     fields:
 
@@ -122,10 +131,12 @@ collections:
           - numbered-list
 
   # ─────────────────────────────────────────────────────────────
-  #  ALL SITE PAGES
+  #  ALL SITE PAGES  (no preview pane — full-width editor)
   # ─────────────────────────────────────────────────────────────
   - name: "pages"
     label: "🏠 Site Content"
+    editor:
+      preview: false
     files:
 
       # ── HOMEPAGE ──────────────────────────────────────────────
