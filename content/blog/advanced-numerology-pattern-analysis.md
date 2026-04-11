@@ -1,13 +1,19 @@
 ---
-title: "Advanced Numerology Pattern Analysis with Destiny Matrix Positions"
-description: "Go beyond basic interpretations and learn advanced destiny matrix pattern analysis for decision quality, resilience, and personal mastery."
-category: "Numerology"
-publishedAt: "2026-03-07"
-readTime: "14 min read"
-tags: ["advanced numerology", "pattern analysis", "decision making", "self-mastery", "destiny matrix"]
-author_name: "Ivan Petrov"
-author_role: "Advanced Systems Contributor"
-ogImage: "/blog/images/advanced-numerology-pattern-analysis.jpg"
+title: Advanced Numerology Pattern Analysis with Destiny Matrix Positions
+description: Go beyond basic interpretations and learn advanced destiny matrix
+  pattern analysis for decision quality, resilience, and personal mastery.
+category: Numerology
+publishedAt: 2026-03-07
+readTime: 14 min read
+author_name: Ivan Petrov
+author_role: Advanced Systems Contributor
+tags:
+  - advanced numerology
+  - pattern analysis
+  - decision making
+  - self-mastery
+  - destiny matrix
+ogImage: /blog/images/year-forecast-destiny-matrix-planning.svg
 ---
 
 ## What Changes at the Advanced Level
