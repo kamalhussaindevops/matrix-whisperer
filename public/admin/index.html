@@ -512,6 +512,31 @@
         </div>
       </div>
 
+      <!-- Workflow section -->
+      <div class="db-section-label">Editorial Workflow</div>
+      <div class="db-grid blog-grid" style="margin-bottom:40px;">
+        <div class="db-card blog-wide" onclick="openEditor('#/workflow','Workflow Board')">
+          <div class="db-card-accent" style="background:linear-gradient(90deg,#10b981,#6366f1,transparent);"></div>
+          <div class="db-card-icon" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.25);font-size:22px;">🔄</div>
+          <div class="db-card-body">
+            <div class="db-card-title">Workflow Board &amp; Publish</div>
+            <div class="db-card-desc">Review pending posts, approve them, then publish everything in one action. Each post moves through the pipeline below before going live.</div>
+            <div class="db-blog-posts" style="margin-top:14px;align-items:center;">
+              <span class="db-blog-pill" style="border-color:rgba(100,116,139,.3);color:#94a3b8;background:rgba(100,116,139,.07);">📝 Draft</span>
+              <span style="color:var(--text3);font-size:11px;padding:0 4px;">→</span>
+              <span class="db-blog-pill" style="border-color:rgba(245,158,11,.3);color:#f59e0b;background:rgba(245,158,11,.07);">👁 In Review</span>
+              <span style="color:var(--text3);font-size:11px;padding:0 4px;">→</span>
+              <span class="db-blog-pill" style="border-color:rgba(16,185,129,.3);color:#10b981;background:rgba(16,185,129,.07);">✅ Ready</span>
+              <span style="color:var(--text3);font-size:11px;padding:0 4px;">→</span>
+              <span class="db-blog-pill" style="border-color:rgba(124,58,237,.3);color:#a78bfa;background:rgba(124,58,237,.07);">🚀 Published</span>
+            </div>
+          </div>
+          <button class="db-card-cta" style="background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 16px rgba(5,150,105,.35);white-space:nowrap;" onclick="openEditor('#/workflow','Workflow Board');event.stopPropagation();">
+            Publish All Ready →
+          </button>
+        </div>
+      </div>
+
       <!-- Blog section -->
       <div class="db-section-label">Blog Content</div>
       <div class="db-grid blog-grid" style="margin-bottom:40px;">
@@ -908,23 +933,58 @@
     css += "#nc-root select{appearance:none!important;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;padding-right:36px!important;}";
 
     /* ════ BUTTONS ═══════════════════════════════════════════════ */
-    /* Base — round corners + smooth */
-    css += "#nc-root button{border-radius:9px!important;font-weight:600!important;font-size:13px!important;transition:all .16s ease!important;cursor:pointer!important;}";
+    /* Base shape — applied to all buttons */
+    css += "#nc-root button{border-radius:9px!important;font-weight:600!important;font-size:13px!important;transition:background .16s ease,box-shadow .16s ease,transform .16s ease,border-color .16s ease!important;cursor:pointer!important;}";
 
-    /* Primary / save / publish */
-    css += "#nc-root button[class*='primary'],#nc-root button[class*='Primary'],#nc-root button[class*='publish'],#nc-root button[class*='Publish'],#nc-root button[class*='success'],#nc-root [class*='saveButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 2px 8px rgba(124,58,237,.35)!important;padding:10px 20px!important;}";
-    css += "#nc-root button[class*='primary']:hover,#nc-root [class*='saveButton']:hover{background:linear-gradient(135deg,#6d28d9,#5b21b6)!important;box-shadow:0 4px 18px rgba(124,58,237,.45)!important;transform:translateY(-1px)!important;}";
+    /* Disabled state — must override BEFORE any active color rules */
+    css += "#nc-root button:disabled,#nc-root button[disabled]{opacity:0.42!important;cursor:not-allowed!important;transform:none!important;box-shadow:none!important;pointer-events:none!important;}";
 
-    /* Secondary / cancel */
+    /* ── Save button (purple gradient) ── */
+    /* Targets the editor Save action; uses role/class combos that are stable in Decap v3 */
+    css += "#nc-root [class*='SaveButton'],#nc-root [class*='saveButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 3px 12px rgba(124,58,237,.38)!important;padding:9px 22px!important;}";
+    css += "#nc-root [class*='SaveButton']:hover:not(:disabled),#nc-root [class*='saveButton']:hover:not(:disabled){background:linear-gradient(135deg,#6d28d9,#5b21b6)!important;box-shadow:0 5px 20px rgba(124,58,237,.5)!important;transform:translateY(-1px)!important;}";
+
+    /* ── Publish / go-live button (green) ── */
+    css += "#nc-root [class*='PublishButton'],#nc-root [class*='publishButton']{background:linear-gradient(135deg,#059669,#10b981)!important;color:#fff!important;border:none!important;box-shadow:0 3px 12px rgba(5,150,105,.38)!important;padding:9px 22px!important;}";
+    css += "#nc-root [class*='PublishButton']:hover:not(:disabled),#nc-root [class*='publishButton']:hover:not(:disabled){background:linear-gradient(135deg,#047857,#059669)!important;box-shadow:0 5px 20px rgba(5,150,105,.5)!important;transform:translateY(-1px)!important;}";
+
+    /* ── Secondary / cancel buttons ── */
     css += "#nc-root button[class*='secondary'],#nc-root button[class*='cancel'],#nc-root button[class*='Cancel'],#nc-root button[class*='default']{background:#fff!important;color:#475569!important;border:1.5px solid #e2e8f0!important;box-shadow:0 1px 3px rgba(0,0,0,.06)!important;padding:9px 18px!important;}";
-    css += "#nc-root button[class*='secondary']:hover{background:#f1f5f9!important;border-color:#cbd5e1!important;}";
+    css += "#nc-root button[class*='secondary']:hover:not(:disabled){background:#f1f5f9!important;border-color:#cbd5e1!important;}";
 
-    /* Danger / delete */
+    /* ── Danger / delete ── */
     css += "#nc-root button[class*='danger'],#nc-root button[class*='delete'],#nc-root button[class*='Delete']{background:#fff!important;color:#dc2626!important;border:1.5px solid #fca5a5!important;}";
-    css += "#nc-root button[class*='danger']:hover{background:#fef2f2!important;border-color:#ef4444!important;}";
+    css += "#nc-root button[class*='danger']:hover:not(:disabled){background:#fef2f2!important;border-color:#ef4444!important;}";
 
-    /* New Blog Post CTA */
-    css += "#nc-root [class*='CreateButton'],#nc-root [class*='createButton'],#nc-root [class*='NewButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border-radius:10px!important;box-shadow:0 4px 16px rgba(124,58,237,.4)!important;}";
+    /* ── "New entry" / Create button (purple) ── */
+    css += "#nc-root [class*='CreateButton'],#nc-root [class*='createButton'],#nc-root [class*='NewButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border-radius:10px!important;border:none!important;box-shadow:0 4px 16px rgba(124,58,237,.4)!important;}";
+    css += "#nc-root [class*='CreateButton']:hover:not(:disabled){box-shadow:0 6px 22px rgba(124,58,237,.55)!important;transform:translateY(-1px)!important;}";
+
+    /* ════ EDITORIAL WORKFLOW BOARD ═══════════════════════════════ */
+    /* The three-column Kanban view at #/workflow */
+    css += "#nc-root [class*='WorkflowList']{padding:16px!important;}";
+
+    /* Kanban column cards */
+    css += "#nc-root [class*='WorkflowCard'],#nc-root [class*='DraggableCard'],#nc-root [class*='workflowCard']{background:#fff!important;border-radius:12px!important;border:1px solid rgba(226,232,240,.9)!important;box-shadow:0 2px 8px rgba(0,0,0,.05)!important;margin-bottom:10px!important;transition:box-shadow .2s,transform .2s!important;}";
+    css += "#nc-root [class*='WorkflowCard']:hover{box-shadow:0 6px 20px rgba(0,0,0,.1)!important;transform:translateY(-2px)!important;}";
+
+    /* Kanban column header labels */
+    css += "#nc-root [class*='WorkflowList'] h2,#nc-root [class*='workflowList'] h2{font-size:12px!important;font-weight:700!important;letter-spacing:.12em!important;text-transform:uppercase!important;color:#64748b!important;margin-bottom:12px!important;}";
+
+    /* Status dropdown in the entry editor toolbar */
+    css += "#nc-root [class*='StatusDropdown'],#nc-root [class*='statusDropdown'],#nc-root [class*='StatusControl']{border:1.5px solid #e2e8f0!important;border-radius:9px!important;background:#fff!important;color:#475569!important;padding:7px 12px!important;font-weight:600!important;font-size:12px!important;cursor:pointer!important;}";
+    css += "#nc-root [class*='StatusDropdown']:focus,#nc-root [class*='StatusControl']:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.12)!important;outline:none!important;}";
+
+    /* Status badge pills on workflow cards */
+    css += "#nc-root [class*='EntryStatus']{border-radius:6px!important;padding:3px 10px!important;font-size:11px!important;font-weight:700!important;letter-spacing:.04em!important;}";
+
+    /* Per-status colour coding */
+    css += "#nc-root [class*='status-draft' i],#nc-root [class*='Draft' i]{background:rgba(100,116,139,.1)!important;color:#64748b!important;}";
+    css += "#nc-root [class*='status-pending' i],#nc-root [class*='InReview' i],#nc-root [class*='Review' i]{background:rgba(245,158,11,.1)!important;color:#d97706!important;}";
+    css += "#nc-root [class*='status-ready' i],#nc-root [class*='Ready' i]{background:rgba(16,185,129,.1)!important;color:#059669!important;}";
+
+    /* "Publish all ready entries" button at top of workflow page */
+    css += "#nc-root [class*='publishAll'],#nc-root [class*='PublishAll'],#nc-root [class*='publish-all']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 4px 16px rgba(124,58,237,.42)!important;padding:10px 22px!important;border-radius:10px!important;font-size:14px!important;}";
 
     /* ════ MARKDOWN EDITOR TOOLBAR ═══════════════════════════════ */
     /* Light gray strip above the markdown textarea */
