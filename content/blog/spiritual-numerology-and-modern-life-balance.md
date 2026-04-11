@@ -1,13 +1,19 @@
 ---
 title: "Spiritual Numerology and Modern Life Balance: A Practical Approach"
-description: "Blend spiritual numerology with modern routines to create grounded habits, emotional balance, and sustainable personal growth."
-category: "Spirituality"
-publishedAt: "2026-03-03"
-readTime: "12 min read"
-tags: ["spiritual numerology", "life balance", "daily practice", "self-growth", "destiny matrix"]
-author_name: "Lina Morales"
-author_role: "Mindset and Rituals Editor"
-ogImage: "/blog/images/spiritual-numerology-and-modern-life-balance.jpg"
+description: Blend spiritual numerology with modern routines to create grounded
+  habits, emotional balance, and sustainable personal growth.
+category: Spirituality
+publishedAt: 2026-03-03
+readTime: 12 min read
+author_name: Lina Morales
+author_role: Mindset and Rituals Editor
+tags:
+  - spiritual numerology
+  - life balance
+  - daily practice
+  - self-growth
+  - destiny matrix
+ogImage: /blog/images/untitled-design-2-.png
 ---
 
 ## Spiritual Insight Needs Real-World Structure
