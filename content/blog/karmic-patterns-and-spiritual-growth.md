@@ -1,13 +1,19 @@
 ---
-title: "Karmic Patterns and Spiritual Growth in Destiny Matrix Work"
-description: "Understand karmic patterns in destiny matrix readings and apply grounded spiritual practices that transform recurring emotional cycles."
-category: "Spirituality"
-publishedAt: "2026-03-18"
-readTime: "12 min read"
-tags: ["karmic lessons", "spiritual growth", "shadow work", "destiny matrix", "inner development"]
-author_name: "Nadia Volkov"
-author_role: "Spiritual Integration Mentor"
-ogImage: "/blog/images/karmic-patterns-and-spiritual-growth.jpg"
+title: Karmic Patterns and Spiritual Growth in Destiny Matrix Work
+description: Understand karmic patterns in destiny matrix readings and apply
+  grounded spiritual practices that transform recurring emotional cycles.
+category: Spirituality
+publishedAt: 2026-03-18
+readTime: 12 min read
+author_name: Nadia Volkov
+author_role: Spiritual Integration Mentor
+tags:
+  - karmic lessons
+  - spiritual growth
+  - shadow work
+  - destiny matrix
+  - inner development
+ogImage: /blog/images/untitled-design-2-.png
 ---
 
 ## Karmic Language Without Fatalism
