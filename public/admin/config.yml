@@ -2,6 +2,13 @@ backend:
   name: git-gateway
   branch: main
 
+# ── Editorial Workflow ────────────────────────────────────────────
+# Saves go to a DRAFT branch — no deploy triggered yet.
+# Only when you click "Publish" does it merge to main → one deploy.
+# If you see "Git Gateway not returning valid settings": go to
+# Netlify → Identity → Services → Git Gateway → Re-authorize.
+publish_mode: editorial_workflow
+
 # Uploaded images go here
 media_folder: "public/blog/images"
 public_folder: "/blog/images"

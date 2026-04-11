@@ -363,6 +363,45 @@
       transform: translateY(-1px);
     }
 
+    /* ── CMS TRANSITION OVERLAY ────────────────────────────────── */
+    #cms-overlay {
+      position: fixed; inset: 0; z-index: 99997;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #05000f; gap: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    #cms-overlay.show { opacity: 1; pointer-events: all; }
+    #cms-overlay.hide { opacity: 0; pointer-events: none; }
+
+    .co-ring-wrap { position: relative; width: 52px; height: 52px; }
+    .co-ring {
+      position: absolute; border-radius: 50%; border: 1.5px solid transparent;
+    }
+    .co-ring:nth-child(1) {
+      inset:0; border-top-color:rgba(139,92,246,.9); border-right-color:rgba(139,92,246,.1);
+      animation: spin 2.2s linear infinite;
+    }
+    .co-ring:nth-child(2) {
+      inset:8px; border-bottom-color:rgba(236,72,153,.9); border-left-color:rgba(236,72,153,.1);
+      animation: spin 1.6s linear infinite reverse;
+    }
+    .co-ring:nth-child(3) {
+      inset:16px; border-top-color:rgba(99,102,241,.8);
+      animation: spin 3s linear infinite;
+    }
+    .co-core {
+      position:absolute; inset:22px;
+      background: linear-gradient(135deg,#7c3aed,#6366f1);
+      border-radius:50%;
+      box-shadow: 0 0 20px rgba(124,58,237,.6);
+    }
+    .co-label {
+      font-size: 11px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: rgba(139,92,246,.7);
+    }
+
     /* ── BACK BUTTON (shown when CMS is active) ─────────────────── */
     #back-btn {
       position: fixed; bottom: 24px; left: 24px; z-index: 999999;
@@ -620,6 +659,17 @@
     </main>
   </div>
 
+  <!-- ── Transition overlay (bridges dashboard → CMS) ────────── -->
+  <div id="cms-overlay">
+    <div class="co-ring-wrap">
+      <div class="co-ring"></div>
+      <div class="co-ring"></div>
+      <div class="co-ring"></div>
+      <div class="co-core"></div>
+    </div>
+    <div class="co-label">Opening editor…</div>
+  </div>
+
   <!-- ── Back-to-dashboard pill (shown over the CMS) ──────────── -->
   <button id="back-btn" onclick="showDashboard()">
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -633,208 +683,472 @@
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
   <script>
-  /* ── Loading label cycling ────────────────────────────────── */
+  /* ════════════════════════════════════════════════════════════
+     LOADING LABEL CYCLING
+  ════════════════════════════════════════════════════════════ */
   (function () {
     var msgs = ["Initializing workspace…","Connecting to Git…","Loading collections…","Checking identity…","Preparing studio…","Almost ready…"];
     var el = document.getElementById("ld-status"), i = 0;
-    var t = setInterval(function () {
-      i = (i + 1) % msgs.length;
-      if (el) el.textContent = msgs[i];
-    }, 560);
+    var t = setInterval(function () { i=(i+1)%msgs.length; if(el) el.textContent=msgs[i]; }, 560);
     window.__ldTimer = t;
   }());
 
-  /* ── Show dashboard — idempotent, safe to call multiple times ── */
+  /* ════════════════════════════════════════════════════════════
+     DASHBOARD REVEAL (idempotent)
+  ════════════════════════════════════════════════════════════ */
   var _revealed = false;
   function revealDashboard() {
-    if (_revealed) return;   /* ← guard: never run twice */
+    if (_revealed) return;
     _revealed = true;
     clearInterval(window.__ldTimer);
     clearTimeout(window.__ldFallback);
-
     var ld = document.getElementById("loading");
     var db = document.getElementById("dashboard");
     if (ld) {
-      ld.style.transition = "opacity .6s ease, transform .6s ease";
-      ld.style.opacity    = "0";
-      ld.style.transform  = "scale(1.03)";
-      setTimeout(function () {
-        if (ld.parentNode) ld.parentNode.removeChild(ld);
-      }, 650);
+      ld.style.transition = "opacity .55s ease, transform .55s ease";
+      ld.style.opacity = "0"; ld.style.transform = "scale(1.03)";
+      setTimeout(function () { if (ld.parentNode) ld.parentNode.removeChild(ld); }, 580);
     }
     if (db) db.classList.add("visible");
   }
-
-  /* Absolute safety timeout — reveals dashboard after 4 s no matter what */
   window.__ldFallback = setTimeout(revealDashboard, 4000);
 
-  /* ── Netlify Identity ─────────────────────────────────────── */
+  /* ════════════════════════════════════════════════════════════
+     NETLIFY IDENTITY
+  ════════════════════════════════════════════════════════════ */
   function applyUser(user) {
     if (!user) return;
-    var email   = user.email || (user.user_metadata && user.user_metadata.full_name) || "Admin";
-    var emailEl = document.getElementById("user-email");
-    var avEl    = document.getElementById("user-av");
-    if (emailEl) emailEl.textContent = email.split("@")[0];
-    if (avEl)    avEl.textContent    = (email[0] || "A").toUpperCase();
+    var email = user.email || (user.user_metadata && user.user_metadata.full_name) || "Admin";
+    var eEl = document.getElementById("user-email");
+    var aEl = document.getElementById("user-av");
+    if (eEl) eEl.textContent = email.split("@")[0];
+    if (aEl) aEl.textContent = (email[0] || "A").toUpperCase();
   }
-
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on("init", function (user) {
-      if (user) {
-        /* Already logged in → update UI and reveal dashboard after short animation */
-        applyUser(user);
-        clearTimeout(window.__ldFallback);
-        window.__ldFallback = setTimeout(revealDashboard, 1400);
-      } else {
-        /* Not logged in → show login modal; dashboard will reveal after login */
-        window.netlifyIdentity.open("login");
-      }
+      if (user) { applyUser(user); clearTimeout(window.__ldFallback); window.__ldFallback = setTimeout(revealDashboard, 1400); }
+      else       { window.netlifyIdentity.open("login"); }
     });
-
     window.netlifyIdentity.on("login", function (user) {
-      /* !! No location.href redirect — that was causing the reload loop !! */
+      /* NO location.href redirect — that caused the reload loop */
       applyUser(user);
-      /* Small delay so the login modal closes smoothly first */
       setTimeout(revealDashboard, 600);
     });
-
-    window.netlifyIdentity.on("logout", function () {
-      /* On sign-out, reload cleanly so login prompt appears again */
-      window.location.reload();
-    });
+    window.netlifyIdentity.on("logout", function () { window.location.reload(); });
   }
 
-  /* ── CMS state ────────────────────────────────────────────── */
+  /* ════════════════════════════════════════════════════════════
+     TRANSITION OVERLAY HELPERS
+  ════════════════════════════════════════════════════════════ */
+  function showOverlay() {
+    var ov = document.getElementById("cms-overlay");
+    if (ov) { ov.classList.add("show"); ov.classList.remove("hide"); }
+  }
+  function hideOverlay() {
+    var ov = document.getElementById("cms-overlay");
+    if (!ov) return;
+    ov.classList.add("hide"); ov.classList.remove("show");
+    setTimeout(function () { ov.classList.remove("hide"); }, 400);
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     OPEN EDITOR (with smooth transition)
+  ════════════════════════════════════════════════════════════ */
   var cmsBooted = false;
-  var pendingHash = null;
 
-  function openEditor(hash, label) {
-    /* hide dashboard */
+  function openEditor(hash) {
+    /* 1. Fade out dashboard */
     var db = document.getElementById("dashboard");
-    if (db) { db.style.opacity = "0"; db.style.pointerEvents = "none"; setTimeout(function(){ db.style.display = "none"; }, 300); }
+    if (db) { db.style.transition="opacity .3s ease"; db.style.opacity="0"; setTimeout(function(){db.style.display="none";db.style.opacity="";db.style.transition="";},320); }
 
-    /* show back button */
+    /* 2. Show transition overlay */
+    showOverlay();
+
+    /* 3. Show back button */
     var btn = document.getElementById("back-btn");
     if (btn) btn.style.display = "flex";
 
     if (!cmsBooted) {
-      cmsBooted  = true;
-      pendingHash = hash || null;
+      cmsBooted = true;
+
+      /* First boot: init CMS, inject styles, navigate */
       CMS.init();
-      /* inject preview template + styles */
       registerCMSPreview();
-      /* navigate to section once CMS root appears */
-      if (pendingHash) {
-        var poll = setInterval(function () {
-          if (document.getElementById("nc-root")) {
-            clearInterval(poll);
-            setTimeout(function () { window.location.hash = pendingHash; }, 600);
-          }
-        }, 150);
-      }
+
+      /* Watch for #nc-root to appear, then inject styles + navigate */
+      var mo = new MutationObserver(function () {
+        var nc = document.getElementById("nc-root");
+        if (!nc) return;
+        mo.disconnect();
+
+        /* Inject comprehensive CMS styles immediately */
+        injectCMSStyles();
+
+        /* Give CMS a moment to fully render, then hide overlay + navigate */
+        setTimeout(function () {
+          hideOverlay();
+          if (hash) window.location.hash = hash;
+        }, 700);
+      });
+      mo.observe(document.body, { childList: true, subtree: false });
+
     } else {
-      if (hash) window.location.hash = hash;
+      /* CMS already booted — just show it and navigate */
+      var nc = document.getElementById("nc-root");
+      if (nc) nc.style.display = "";
+      setTimeout(function () {
+        hideOverlay();
+        if (hash) window.location.hash = hash;
+      }, 250);
     }
   }
 
+  /* ════════════════════════════════════════════════════════════
+     SHOW DASHBOARD
+  ════════════════════════════════════════════════════════════ */
   function showDashboard() {
-    var db = document.getElementById("dashboard");
-    if (db) { db.style.display = "block"; db.style.opacity = "0"; db.style.pointerEvents = ""; setTimeout(function(){ db.style.opacity = "1"; }, 20); }
+    /* Hide CMS */
+    var nc = document.getElementById("nc-root");
+    if (nc) nc.style.display = "none";
 
+    /* Hide back button */
     var btn = document.getElementById("back-btn");
     if (btn) btn.style.display = "none";
 
-    /* hide CMS root */
-    var nc = document.getElementById("nc-root");
-    if (nc) nc.style.display = "none";
+    /* Fade in dashboard */
+    var db = document.getElementById("dashboard");
+    if (db) {
+      db.style.display = "block";
+      db.style.opacity = "0";
+      db.style.transition = "opacity .4s ease";
+      requestAnimationFrame(function () { db.style.opacity = "1"; });
+      setTimeout(function () { db.style.transition = ""; }, 450);
+    }
   }
 
-  /* ── Observe nc-root visibility when re-entering CMS ──────── */
-  document.addEventListener("click", function (e) {
-    var btn = e.target.closest("#back-btn");
-    if (btn) return; /* handled above */
+  /* ════════════════════════════════════════════════════════════
+     INJECT PREMIUM CSS INTO DECAP CMS
+     Scoped to #nc-root. Uses semantic + attribute selectors so
+     it works even though CMS uses CSS-in-JS generated class names.
+  ════════════════════════════════════════════════════════════ */
+  var _stylesInjected = false;
+  function injectCMSStyles() {
+    if (_stylesInjected) return;
+    _stylesInjected = true;
 
-    /* if CMS root was hidden, restore it */
-    var nc = document.getElementById("nc-root");
-    if (nc && nc.style.display === "none" && cmsBooted) {
-      if (!document.getElementById("dashboard") || document.getElementById("dashboard").style.display === "none") {
-        nc.style.display = "";
-      }
-    }
-  });
+    var s = document.createElement("style");
+    s.id = "dm-cms-override";
+    s.textContent = [
+      /* ── Font everywhere ── */
+      "#nc-root,#nc-root *{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif!important;-webkit-font-smoothing:antialiased!important;}",
 
-  /* ── CMS preview registration ─────────────────────────────── */
+      /* ── Background ── */
+      "#nc-root{background:#f0f4f8!important;}",
+      "body{background:#f0f4f8!important;}",
+
+      /* ── Scrollbars ── */
+      "#nc-root ::-webkit-scrollbar{width:5px;height:5px;}",
+      "#nc-root ::-webkit-scrollbar-track{background:transparent;}",
+      "#nc-root ::-webkit-scrollbar-thumb{background:rgba(124,58,237,.28);border-radius:3px;}",
+      "#nc-root ::-webkit-scrollbar-thumb:hover{background:rgba(124,58,237,.5);}",
+
+      /* ── HEADER — dark navy ── */
+      "#nc-root header,",
+      "#nc-root [role='banner'],",
+      "#nc-root [class*='AppHeader'],[class*='appHeader'],",
+      "#nc-root [class*='Topbar'],[class*='topbar'],[class*='TopBar'],",
+      "#nc-root [class*='NavBar'],[class*='navbar'],",
+      "#nc-root [class*='toolbar'],[class*='Toolbar']{",
+      "  background:#0d1117!important;",
+      "  border-bottom:1px solid rgba(255,255,255,.07)!important;",
+      "  box-shadow:0 1px 0 rgba(255,255,255,.04),0 4px 24px rgba(0,0,0,.45)!important;",
+      "  color:rgba(255,255,255,.85)!important;",
+      "}",
+      "#nc-root header *,#nc-root [role='banner'] *{color:rgba(255,255,255,.8)!important;}",
+      "#nc-root header a:hover{color:#a78bfa!important;}",
+      "#nc-root header svg,#nc-root [role='banner'] svg{fill:rgba(255,255,255,.6)!important;}",
+
+      /* ── SIDEBAR — dark slate ── */
+      "#nc-root nav,#nc-root aside,",
+      "#nc-root [role='navigation'],",
+      "#nc-root [class*='Sidebar'],[class*='sidebar'],",
+      "#nc-root [class*='NavMenu'],[class*='navMenu'],",
+      "#nc-root [class*='CollectionNav'],[class*='collectionNav']{",
+      "  background:#111827!important;",
+      "  border-right:1px solid rgba(255,255,255,.06)!important;",
+      "  box-shadow:2px 0 16px rgba(0,0,0,.25)!important;",
+      "}",
+      "#nc-root nav *,#nc-root aside *,#nc-root [role='navigation'] *{color:rgba(255,255,255,.58)!important;}",
+      "#nc-root nav a:hover,#nc-root aside a:hover{background:rgba(139,92,246,.14)!important;color:rgba(255,255,255,.95)!important;border-radius:8px!important;}",
+      "#nc-root [class*='active'],#nc-root [aria-current='page'],#nc-root [class*='isActive']{background:rgba(139,92,246,.18)!important;color:#c4b5fd!important;border-radius:8px!important;}",
+
+      /* ── MAIN / collection area ── */
+      "#nc-root main,#nc-root [role='main']{background:#f0f4f8!important;}",
+
+      /* ── COLLECTION LIST items ── */
+      "#nc-root [class*='ListItem'],[class*='listItem'],",
+      "#nc-root [class*='EntryCard'],[class*='entryCard']{",
+      "  background:#fff!important;",
+      "  border:1px solid rgba(226,232,240,.9)!important;",
+      "  border-radius:14px!important;",
+      "  box-shadow:0 1px 4px rgba(0,0,0,.05)!important;",
+      "  transition:box-shadow .2s,transform .2s,border-color .2s!important;",
+      "}",
+      "#nc-root [class*='ListItem']:hover,[class*='EntryCard']:hover{",
+      "  box-shadow:0 6px 24px rgba(0,0,0,.1),0 0 0 2px rgba(124,58,237,.15)!important;",
+      "  border-color:rgba(124,58,237,.3)!important;",
+      "  transform:translateY(-2px)!important;",
+      "}",
+
+      /* ── EDITOR cards ── */
+      "#nc-root [class*='ControlPane'],[class*='controlPane'],",
+      "#nc-root [class*='EditorContainer'],[class*='editorContainer']{",
+      "  background:#fff!important;",
+      "  border-radius:16px!important;",
+      "  border:1px solid rgba(226,232,240,.9)!important;",
+      "  box-shadow:0 2px 8px rgba(0,0,0,.05)!important;",
+      "}",
+
+      /* ── LABELS ── */
+      "#nc-root label{font-size:11px!important;font-weight:700!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#64748b!important;margin-bottom:6px!important;}",
+
+      /* ── HINT text ── */
+      "#nc-root [class*='Hint'],[class*='hint'],[class*='FieldHint']{font-size:12px!important;color:#94a3b8!important;line-height:1.5!important;}",
+
+      /* ── TEXT INPUTS ── */
+      "#nc-root input[type='text'],#nc-root input[type='email'],#nc-root input[type='url'],",
+      "#nc-root input[type='search'],#nc-root input[type='number'],#nc-root input[type='date'],",
+      "#nc-root input[type='datetime-local'],#nc-root textarea,#nc-root select{",
+      "  background:#f8fafc!important;",
+      "  border:1.5px solid #e2e8f0!important;",
+      "  border-radius:10px!important;",
+      "  color:#0f172a!important;",
+      "  font-size:14px!important;",
+      "  padding:10px 14px!important;",
+      "  line-height:1.5!important;",
+      "  transition:border-color .15s,box-shadow .15s,background .15s!important;",
+      "}",
+      "#nc-root input:focus,#nc-root textarea:focus,#nc-root select:focus{",
+      "  border-color:#7c3aed!important;",
+      "  box-shadow:0 0 0 3px rgba(124,58,237,.13)!important;",
+      "  outline:none!important;background:#fff!important;",
+      "}",
+      "#nc-root input::placeholder,#nc-root textarea::placeholder{color:#94a3b8!important;}",
+
+      /* ── SELECT chevron ── */
+      "#nc-root select{appearance:none!important;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;padding-right:36px!important;}",
+
+      /* ── ALL BUTTONS base ── */
+      "#nc-root button{border-radius:9px!important;font-weight:600!important;font-size:13px!important;letter-spacing:-.01em!important;transition:all .16s ease!important;cursor:pointer!important;}",
+
+      /* ── Primary/save/publish buttons ── */
+      "#nc-root button[class*='primary'],#nc-root button[class*='Primary'],",
+      "#nc-root button[class*='publish'],#nc-root button[class*='Publish'],",
+      "#nc-root button[class*='success'],#nc-root [class*='saveButton'],",
+      "#nc-root button[type='submit']:not([class*='cancel']):not([class*='Cancel']){",
+      "  background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;",
+      "  color:#fff!important;border:none!important;",
+      "  box-shadow:0 2px 8px rgba(124,58,237,.35),0 1px 2px rgba(0,0,0,.12)!important;",
+      "  padding:10px 20px!important;",
+      "}",
+      "#nc-root button[class*='primary']:hover,#nc-root [class*='saveButton']:hover{",
+      "  background:linear-gradient(135deg,#6d28d9,#5b21b6)!important;",
+      "  box-shadow:0 4px 18px rgba(124,58,237,.45)!important;",
+      "  transform:translateY(-1px)!important;",
+      "}",
+
+      /* ── Secondary/cancel buttons ── */
+      "#nc-root button[class*='secondary'],#nc-root button[class*='cancel'],",
+      "#nc-root button[class*='Cancel'],#nc-root button[class*='default']{",
+      "  background:#fff!important;color:#475569!important;",
+      "  border:1.5px solid #e2e8f0!important;",
+      "  box-shadow:0 1px 3px rgba(0,0,0,.06)!important;padding:9px 18px!important;",
+      "}",
+      "#nc-root button[class*='secondary']:hover{background:#f1f5f9!important;border-color:#cbd5e1!important;}",
+
+      /* ── Danger buttons ── */
+      "#nc-root button[class*='danger'],#nc-root button[class*='delete'],#nc-root button[class*='Delete']{",
+      "  background:#fff!important;color:#dc2626!important;border:1.5px solid #fca5a5!important;",
+      "}",
+      "#nc-root button[class*='danger']:hover{background:#fef2f2!important;border-color:#ef4444!important;}",
+
+      /* ── Markdown toolbar ── */
+      "#nc-root [class*='Toolbar'],[class*='EditorToolbar']{",
+      "  background:#f8fafc!important;",
+      "  border-bottom:1px solid #e2e8f0!important;",
+      "  border-radius:12px 12px 0 0!important;",
+      "  padding:6px 8px!important;",
+      "}",
+      "#nc-root [class*='Toolbar'] button{",
+      "  background:transparent!important;border:none!important;box-shadow:none!important;",
+      "  color:#64748b!important;border-radius:7px!important;padding:5px 9px!important;",
+      "  transition:background .12s,color .12s!important;",
+      "}",
+      "#nc-root [class*='Toolbar'] button:hover{background:#e2e8f0!important;color:#1e293b!important;}",
+      "#nc-root [class*='Toolbar'] button[class*='active'],",
+      "#nc-root [class*='Toolbar'] button[aria-pressed='true']{background:rgba(124,58,237,.1)!important;color:#7c3aed!important;}",
+
+      /* ── Media library & upload ── */
+      "#nc-root [class*='MediaLibrary'],[class*='mediaLibrary']{background:#f0f4f8!important;border-radius:16px!important;}",
+      "#nc-root [class*='MediaLibrary'] img{border-radius:10px!important;transition:transform .2s,box-shadow .2s!important;}",
+      "#nc-root [class*='MediaLibrary'] img:hover{transform:scale(1.04)!important;box-shadow:0 8px 24px rgba(0,0,0,.15)!important;}",
+
+      /* ── Dropzone / upload area ── */
+      "#nc-root [class*='Dropzone'],[class*='dropzone'],",
+      "#nc-root [class*='DropArea'],[class*='ImageUpload']{",
+      "  border:2px dashed rgba(124,58,237,.38)!important;",
+      "  border-radius:14px!important;",
+      "  background:rgba(124,58,237,.04)!important;",
+      "  transition:border-color .2s,background .2s!important;",
+      "}",
+      "#nc-root [class*='Dropzone']:hover,[class*='dropzone']:hover{border-color:#7c3aed!important;background:rgba(124,58,237,.08)!important;}",
+
+      /* ── Upload progress / spinner ── */
+      "#nc-root [class*='progress'],[class*='Progress']{",
+      "  background:rgba(124,58,237,.12)!important;border-radius:99px!important;overflow:hidden!important;",
+      "}",
+      "#nc-root [class*='progress'] > *,[class*='Progress'] > *{",
+      "  background:linear-gradient(90deg,#7c3aed,#a855f7)!important;",
+      "  border-radius:99px!important;transition:width .3s ease!important;",
+      "}",
+
+      /* ── Modals & overlays ── */
+      "#nc-root [class*='Modal'],[class*='Dialog'],[role='dialog']{",
+      "  border-radius:20px!important;",
+      "  box-shadow:0 32px 96px rgba(0,0,0,.35),0 8px 32px rgba(0,0,0,.2)!important;",
+      "}",
+      "#nc-root [class*='Overlay'],[class*='Backdrop'],[class*='overlay']{",
+      "  background:rgba(4,0,26,.72)!important;backdrop-filter:blur(8px)!important;",
+      "}",
+
+      /* ── Toast notifications ── */
+      "#nc-root [class*='Toast'],[class*='toast'],[class*='Notification'],[class*='Alert']{",
+      "  border-radius:14px!important;font-size:13px!important;font-weight:500!important;",
+      "  box-shadow:0 12px 40px rgba(0,0,0,.25)!important;",
+      "}",
+
+      /* ── Tags / badges ── */
+      "#nc-root [class*='Badge'],[class*='Tag'],[class*='Chip'],[class*='badge']{",
+      "  background:rgba(124,58,237,.1)!important;color:#7c3aed!important;",
+      "  border-radius:6px!important;padding:3px 9px!important;",
+      "  font-size:11px!important;font-weight:700!important;",
+      "}",
+
+      /* ── Dropdown menus ── */
+      "#nc-root [role='menu'],[class*='Dropdown'],[class*='Menu']{",
+      "  background:#1e293b!important;",
+      "  border:1px solid rgba(255,255,255,.08)!important;",
+      "  border-radius:12px!important;",
+      "  box-shadow:0 20px 60px rgba(0,0,0,.45)!important;",
+      "  backdrop-filter:blur(12px)!important;padding:6px!important;",
+      "}",
+      "#nc-root [role='menuitem'],[class*='MenuItem']{",
+      "  color:rgba(255,255,255,.75)!important;border-radius:8px!important;",
+      "  font-size:13px!important;transition:background .12s!important;",
+      "}",
+      "#nc-root [role='menuitem']:hover{background:rgba(139,92,246,.2)!important;color:#fff!important;}",
+
+      /* ── Headings ── */
+      "#nc-root h1,#nc-root h2,#nc-root h3{letter-spacing:-.03em!important;color:#0f172a!important;}",
+
+      /* ── Collapse/accordion sections ── */
+      "#nc-root [class*='Collapse'],[class*='Accordion']{",
+      "  border-radius:12px!important;",
+      "  border:1px solid rgba(226,232,240,.8)!important;",
+      "  background:#fff!important;overflow:hidden!important;margin-bottom:8px!important;",
+      "}",
+
+      /* ── Image widget preview ── */
+      "#nc-root [class*='ImagePreview'] img,[class*='imagePreview'] img{",
+      "  border-radius:12px!important;",
+      "  box-shadow:0 4px 16px rgba(0,0,0,.1)!important;",
+      "  transition:transform .2s,box-shadow .2s!important;max-width:100%!important;",
+      "}",
+
+      /* ── New entry button (floating) ── */
+      "#nc-root [class*='CreateButton'],[class*='newButton']{",
+      "  background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;",
+      "  color:#fff!important;border-radius:10px!important;",
+      "  box-shadow:0 4px 16px rgba(124,58,237,.4)!important;",
+      "}",
+
+      /* ── Loading spinners (purple) ── */
+      "#nc-root [class*='Spinner'],[class*='spinner']{",
+      "  border-top-color:#7c3aed!important;",
+      "}",
+    ].join("\n");
+
+    document.head.appendChild(s);
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     CMS PREVIEW TEMPLATE + STYLES
+  ════════════════════════════════════════════════════════════ */
   function registerCMSPreview() {
-    /* Preview CSS */
     CMS.registerPreviewStyle(
       "@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');" +
-      "*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }" +
-      "body { font-family:'Inter',sans-serif; background:#f9fafb; color:#111827; }" +
-      ".dm { max-width:760px; margin:0 auto; padding:32px 24px 80px; }" +
-      ".dm-img { width:100%; height:260px; object-fit:cover; border-radius:16px; margin-bottom:24px; display:block; box-shadow:0 4px 24px rgba(0,0,0,.12); }" +
-      ".dm-ph { width:100%; height:200px; border-radius:16px; margin-bottom:24px; background:linear-gradient(135deg,#7c3aed,#6366f1,#ec4899); display:flex; align-items:center; justify-content:center; font-size:52px; color:rgba(255,255,255,.45); }" +
-      ".dm-meta { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; }" +
-      ".dm-cat { background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:5px 13px; border-radius:99px; box-shadow:0 2px 8px rgba(124,58,237,.3); }" +
-      ".dm-rt, .dm-date { font-size:13px; color:#6b7280; }" +
-      ".dm-title { font-size:2rem; font-weight:800; color:#111827; line-height:1.18; letter-spacing:-.04em; margin:0 0 14px; }" +
-      ".dm-desc { font-size:1.05rem; color:#4b5563; line-height:1.65; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #e5e7eb; }" +
-      ".dm-author { display:flex; align-items:center; gap:12px; margin-bottom:28px; }" +
-      ".dm-av { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#a78bfa,#f9a8d4); display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:800; color:#fff; flex-shrink:0; }" +
-      ".dm-an { font-weight:700; font-size:14px; color:#111827; }" +
-      ".dm-ar { font-size:12px; color:#6b7280; margin-top:2px; }" +
-      ".dm-body { font-size:1rem; line-height:1.78; color:#374151; }" +
-      ".dm-body h2 { font-size:1.45rem; font-weight:800; color:#111827; margin:36px 0 14px; letter-spacing:-.03em; padding-bottom:8px; border-bottom:2px solid #f3f4f6; }" +
-      ".dm-body h3 { font-size:1.15rem; font-weight:700; color:#1f2937; margin:26px 0 10px; }" +
-      ".dm-body p { margin:0 0 18px; }" +
-      ".dm-body ul, .dm-body ol { padding-left:28px; margin:0 0 18px; }" +
-      ".dm-body li { margin-bottom:6px; }" +
-      ".dm-body strong { color:#111827; font-weight:700; }" +
-      ".dm-body a { color:#7c3aed; text-decoration:underline; text-underline-offset:3px; }" +
-      ".dm-body code { background:#f1f5f9; padding:2px 7px; border-radius:5px; font-family:monospace; font-size:.875em; color:#6d28d9; }" +
-      ".dm-body blockquote { border-left:4px solid #7c3aed; background:linear-gradient(90deg,rgba(124,58,237,.06),transparent); padding:14px 20px; margin:20px 0; border-radius:0 10px 10px 0; color:#4b5563; font-style:italic; }" +
-      ".dm-body hr { border:none; border-top:1px solid #e5e7eb; margin:28px 0; }" +
-      ".dm-empty { text-align:center; padding:80px 20px; color:#9ca3af; }" +
-      ".dm-empty-icon { font-size:52px; margin-bottom:14px; }" +
-      ".dm-empty-text { font-size:14px; font-weight:500; }",
+      "*, *::before, *::after{box-sizing:border-box;margin:0;padding:0;}" +
+      "body{font-family:'Inter',sans-serif;background:#f9fafb;color:#111827;}" +
+      ".dm{max-width:760px;margin:0 auto;padding:32px 24px 80px;}" +
+      ".dm-img{width:100%;height:260px;object-fit:cover;border-radius:16px;margin-bottom:24px;display:block;box-shadow:0 4px 24px rgba(0,0,0,.12);}" +
+      ".dm-ph{width:100%;height:200px;border-radius:16px;margin-bottom:24px;background:linear-gradient(135deg,#7c3aed,#6366f1,#ec4899);display:flex;align-items:center;justify-content:center;font-size:52px;color:rgba(255,255,255,.45);}" +
+      ".dm-meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;}" +
+      ".dm-cat{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 13px;border-radius:99px;box-shadow:0 2px 8px rgba(124,58,237,.3);}" +
+      ".dm-rt,.dm-date{font-size:13px;color:#6b7280;}" +
+      ".dm-title{font-size:2rem;font-weight:800;color:#111827;line-height:1.18;letter-spacing:-.04em;margin:0 0 14px;}" +
+      ".dm-desc{font-size:1.05rem;color:#4b5563;line-height:1.65;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e5e7eb;}" +
+      ".dm-author{display:flex;align-items:center;gap:12px;margin-bottom:28px;}" +
+      ".dm-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#f9a8d4);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0;}" +
+      ".dm-an{font-weight:700;font-size:14px;color:#111827;}" +
+      ".dm-ar{font-size:12px;color:#6b7280;margin-top:2px;}" +
+      ".dm-body{font-size:1rem;line-height:1.78;color:#374151;}" +
+      ".dm-body h2{font-size:1.45rem;font-weight:800;color:#111827;margin:36px 0 14px;letter-spacing:-.03em;padding-bottom:8px;border-bottom:2px solid #f3f4f6;}" +
+      ".dm-body h3{font-size:1.15rem;font-weight:700;color:#1f2937;margin:26px 0 10px;}" +
+      ".dm-body p{margin:0 0 18px;}" +
+      ".dm-body ul,.dm-body ol{padding-left:28px;margin:0 0 18px;}" +
+      ".dm-body li{margin-bottom:6px;}" +
+      ".dm-body strong{color:#111827;font-weight:700;}" +
+      ".dm-body a{color:#7c3aed;text-decoration:underline;text-underline-offset:3px;}" +
+      ".dm-body code{background:#f1f5f9;padding:2px 7px;border-radius:5px;font-family:monospace;font-size:.875em;color:#6d28d9;}" +
+      ".dm-body blockquote{border-left:4px solid #7c3aed;background:linear-gradient(90deg,rgba(124,58,237,.06),transparent);padding:14px 20px;margin:20px 0;border-radius:0 10px 10px 0;color:#4b5563;font-style:italic;}" +
+      ".dm-body hr{border:none;border-top:1px solid #e5e7eb;margin:28px 0;}" +
+      ".dm-empty{text-align:center;padding:80px 20px;color:#9ca3af;}" +
+      ".dm-empty-icon{font-size:52px;margin-bottom:14px;}" +
+      ".dm-empty-text{font-size:14px;font-weight:500;}",
       { raw: true }
     );
 
-    /* Blog preview template */
     var BlogPreview = createClass({
       render: function () {
-        var d      = this.props.entry.get("data");
-        var title  = d.get("title")       || "Untitled Post";
-        var desc   = d.get("description") || "";
-        var cat    = d.get("category")    || "";
-        var author = d.get("author_name") || "DestinyMatrix Team";
-        var role   = d.get("author_role") || "";
-        var rt     = d.get("readTime")    || "";
-        var date   = d.get("publishedAt") || "";
-        var img    = d.get("ogImage")     || "";
-        var body   = this.props.widgetFor("body");
-        var init   = (author.trim()[0] || "D").toUpperCase();
-        var ds = "";
-        try { ds = date ? new Date(date).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}) : ""; } catch(e){}
-
+        var d=this.props.entry.get("data");
+        var title=d.get("title")||"Untitled Post";
+        var desc=d.get("description")||"";
+        var cat=d.get("category")||"";
+        var author=d.get("author_name")||"DestinyMatrix Team";
+        var role=d.get("author_role")||"";
+        var rt=d.get("readTime")||"";
+        var date=d.get("publishedAt")||"";
+        var img=d.get("ogImage")||"";
+        var body=this.props.widgetFor("body");
+        var init=(author.trim()[0]||"D").toUpperCase();
+        var ds="";
+        try{ds=date?new Date(date).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}):""}catch(e){}
         return h("div",{className:"dm"},
-          img ? h("img",{className:"dm-img",src:img,alt:title}) : h("div",{className:"dm-ph"},"✦"),
+          img?h("img",{className:"dm-img",src:img,alt:title}):h("div",{className:"dm-ph"},"✦"),
           h("div",{className:"dm-meta"},
-            cat ? h("span",{className:"dm-cat"},cat) : null,
-            rt  ? h("span",{className:"dm-rt"},"⏱ "+rt) : null,
-            ds  ? h("span",{className:"dm-date"},"📅 "+ds) : null
+            cat?h("span",{className:"dm-cat"},cat):null,
+            rt?h("span",{className:"dm-rt"},"⏱ "+rt):null,
+            ds?h("span",{className:"dm-date"},"📅 "+ds):null
           ),
           h("h1",{className:"dm-title"},title),
-          desc ? h("p",{className:"dm-desc"},desc) : null,
+          desc?h("p",{className:"dm-desc"},desc):null,
           h("div",{className:"dm-author"},
             h("div",{className:"dm-av"},init),
-            h("div",{},
-              h("div",{className:"dm-an"},author),
-              role ? h("div",{className:"dm-ar"},role) : null
-            )
+            h("div",{},h("div",{className:"dm-an"},author),role?h("div",{className:"dm-ar"},role):null)
           ),
           body
-            ? h("div",{className:"dm-body"},body)
-            : h("div",{className:"dm-empty"},h("div",{className:"dm-empty-icon"},"✍️"),h("div",{className:"dm-empty-text"},"Start writing on the left — your preview appears here in real time."))
+            ?h("div",{className:"dm-body"},body)
+            :h("div",{className:"dm-empty"},h("div",{className:"dm-empty-icon"},"✍️"),h("div",{className:"dm-empty-text"},"Start writing on the left — preview appears here in real time."))
         );
       }
     });
