@@ -13,7 +13,7 @@ tags:
   - decision making
   - self-mastery
   - destiny matrix
-ogImage: /blog/images/year-forecast-destiny-matrix-planning.svg
+ogImage: /blog/images/untitled-design-2-.png
 ---
 
 ## What Changes at the Advanced Level
