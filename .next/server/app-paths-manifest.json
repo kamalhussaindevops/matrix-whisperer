@@ -1,21 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/robots.txt/route": "app/robots.txt/route.js",
-  "/sitemap.xml/route": "app/sitemap.xml/route.js",
-  "/about/page": "app/about/page.js",
-  "/arcana-calculator/page": "app/arcana-calculator/page.js",
-  "/blog/[slug]/page": "app/blog/[slug]/page.js",
-  "/blog/page": "app/blog/page.js",
-  "/calculator/page": "app/calculator/page.js",
-  "/compatibility/page": "app/compatibility/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/learn/number-meanings/page": "app/learn/number-meanings/page.js",
-  "/learn/guide/page": "app/learn/guide/page.js",
-  "/learn/page": "app/learn/page.js",
-  "/learn/what-is-destiny-matrix/page": "app/learn/what-is-destiny-matrix/page.js",
-  "/privacy/page": "app/privacy/page.js",
-  "/karmic-calculator/page": "app/karmic-calculator/page.js",
-  "/year-forecast/page": "app/year-forecast/page.js",
-  "/child-matrix/page": "app/child-matrix/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/_not-found/page": "app/_not-found/page.js"
 }
