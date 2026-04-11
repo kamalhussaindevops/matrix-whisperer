@@ -1,278 +1,812 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex" />
-    <title>DestinyMatrix — Content Editor</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f0c29; }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>DestinyMatrix — Content Studio</title>
 
-      /* ── Loading screen ──────────────────────────────────────── */
-      #loading {
-        position: fixed; inset: 0;
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-        color: #fff; gap: 20px; z-index: 9999;
-        transition: opacity 0.5s ease;
-      }
-      .loading-logo {
-        width: 72px; height: 72px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 20px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 36px;
-        box-shadow: 0 8px 32px rgba(102,126,234,0.4);
-        animation: pulse 2s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(102,126,234,0.4); }
-        50% { transform: scale(1.05); box-shadow: 0 12px 48px rgba(102,126,234,0.6); }
-      }
-      .loading-text { text-align: center; }
-      .loading-text h1 {
-        font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
-        background: linear-gradient(135deg, #a78bfa, #f9a8d4);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .loading-text p { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 6px; }
-      .loading-bar {
-        width: 200px; height: 3px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 2px; overflow: hidden;
-      }
-      .loading-bar-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #667eea, #764ba2, #f9a8d4);
-        border-radius: 2px;
-        animation: bar 1.8s ease-in-out infinite;
-      }
-      @keyframes bar {
-        0% { width: 0%; margin-left: 0%; }
-        50% { width: 70%; margin-left: 15%; }
-        100% { width: 0%; margin-left: 100%; }
-      }
-    </style>
-  </head>
-  <body>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-    <!-- Loading screen shown until CMS initializes -->
-    <div id="loading">
-      <div class="loading-logo">✦</div>
-      <div class="loading-text">
-        <h1>DestinyMatrix CMS</h1>
-        <p>Loading your content editor…</p>
-      </div>
-      <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <style>
+    /* ──────────────────────────────────────────────────────────────
+       BASE
+    ────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ──────────────────────────────────────────────────────────────
+       SPLASH SCREEN
+    ────────────────────────────────────────────────────────────── */
+    #splash {
+      position: fixed; inset: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: center;
+      background: #04001a;
+      transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1);
+      will-change: opacity, transform;
+    }
+
+    /* ── Layered background ── */
+    .sp-bg {
+      position: absolute; inset: 0; overflow: hidden;
+    }
+    .sp-bg-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px); opacity: 0.45;
+      animation: orbDrift 12s ease-in-out infinite alternate;
+    }
+    .sp-bg-orb:nth-child(1) {
+      width: 60vw; height: 60vw; top: -20%; left: -15%;
+      background: radial-gradient(circle, #5b21b6, transparent 70%);
+      animation-delay: 0s;
+    }
+    .sp-bg-orb:nth-child(2) {
+      width: 50vw; height: 50vw; bottom: -15%; right: -10%;
+      background: radial-gradient(circle, #1d4ed8, transparent 70%);
+      animation-delay: -4s;
+    }
+    .sp-bg-orb:nth-child(3) {
+      width: 35vw; height: 35vw; top: 40%; left: 55%;
+      background: radial-gradient(circle, #be185d, transparent 70%);
+      animation-delay: -8s;
+    }
+    @keyframes orbDrift {
+      0%   { transform: translate(0px,   0px)   scale(1);    }
+      33%  { transform: translate(30px,  -20px) scale(1.05); }
+      66%  { transform: translate(-20px,  30px) scale(0.97); }
+      100% { transform: translate(10px,  -10px) scale(1.02); }
+    }
+
+    /* Fine grid overlay */
+    .sp-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(139,92,246,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,92,246,0.06) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+    /* Vignette */
+    .sp-vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(4,0,26,0.85) 100%);
+    }
+
+    /* ── Center content ── */
+    .sp-center {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 40px;
+      animation: spIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes spIn {
+      from { opacity: 0; transform: scale(0.92) translateY(20px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0);     }
+    }
+
+    /* ── Logo mark ── */
+    .sp-logo {
+      position: relative; width: 100px; height: 100px;
+    }
+    .sp-ring {
+      position: absolute; border-radius: 50%;
+      border: 1.5px solid transparent;
+    }
+    .sp-ring:nth-child(1) {
+      inset: 0;
+      border-top-color: rgba(139,92,246,0.9);
+      border-right-color: rgba(139,92,246,0.15);
+      animation: spin 2.8s linear infinite;
+    }
+    .sp-ring:nth-child(2) {
+      inset: 10px;
+      border-bottom-color: rgba(236,72,153,0.9);
+      border-left-color: rgba(236,72,153,0.15);
+      animation: spin 2s linear infinite reverse;
+    }
+    .sp-ring:nth-child(3) {
+      inset: 20px;
+      border-top-color: rgba(99,102,241,0.8);
+      border-right-color: rgba(99,102,241,0.1);
+      animation: spin 3.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .sp-core {
+      position: absolute; inset: 28px;
+      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #ec4899 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: #fff;
+      box-shadow:
+        0 0 0 1px rgba(139,92,246,0.3),
+        0 0 30px rgba(124,58,237,0.6),
+        0 0 60px rgba(124,58,237,0.25);
+      animation: corePulse 3s ease-in-out infinite;
+    }
+    @keyframes corePulse {
+      0%,100% { box-shadow: 0 0 0 1px rgba(139,92,246,0.3), 0 0 30px rgba(124,58,237,0.6), 0 0 60px rgba(124,58,237,0.25); }
+      50%      { box-shadow: 0 0 0 1px rgba(139,92,246,0.5), 0 0 50px rgba(124,58,237,0.9), 0 0 90px rgba(124,58,237,0.4); }
+    }
+
+    /* ── Text block ── */
+    .sp-text { text-align: center; }
+    .sp-text h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.2rem; font-weight: 800;
+      letter-spacing: -0.05em; line-height: 1;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sp-text p {
+      font-family: 'Inter', sans-serif;
+      margin-top: 8px; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(139,92,246,0.85);
+    }
+
+    /* ── Status pills ── */
+    .sp-pills {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    }
+    .sp-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 99px; padding: 7px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.45);
+      backdrop-filter: blur(8px);
+    }
+    .sp-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .sp-dot.on  { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.8); }
+    .sp-dot.blink {
+      background: rgba(255,255,255,0.2);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+
+    /* ── Progress bar ── */
+    .sp-bar {
+      width: 260px;
+    }
+    .sp-bar-track {
+      height: 2px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden;
+    }
+    .sp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #6366f1, #ec4899);
+      border-radius: 2px;
+      animation: barFill 2.8s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes barFill { from { width:0% } to { width:100% } }
+    .sp-bar-label {
+      text-align: center; margin-top: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.2);
+      transition: color 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════ SPLASH ══════════════════════════ -->
+  <div id="splash">
+    <div class="sp-bg">
+      <div class="sp-bg-orb"></div>
+      <div class="sp-bg-orb"></div>
+      <div class="sp-bg-orb"></div>
+      <div class="sp-grid"></div>
+      <div class="sp-vignette"></div>
     </div>
 
-    <!-- Decap CMS -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <div class="sp-center">
 
-    <script>
-      /* ── 1. Hide loading screen once CMS is ready ─────────────── */
-      document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-          var el = document.getElementById("loading");
-          if (el) {
-            el.style.opacity = "0";
-            setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
-          }
-        }, 2000);
-      });
+      <div class="sp-logo">
+        <div class="sp-ring"></div>
+        <div class="sp-ring"></div>
+        <div class="sp-ring"></div>
+        <div class="sp-core">✦</div>
+      </div>
 
-      /* ── 2. Netlify Identity redirect after login ──────────────── */
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", function (user) {
-          if (!user) {
-            window.netlifyIdentity.on("login", function () {
-              document.location.href = "/admin/";
-            });
-          }
+      <div class="sp-text">
+        <h1>DestinyMatrix</h1>
+        <p>Content Studio</p>
+      </div>
+
+      <div class="sp-pills">
+        <div class="sp-pill"><div class="sp-dot on"></div>Netlify Connected</div>
+        <div class="sp-pill"><div class="sp-dot on"></div>Git Gateway Active</div>
+        <div class="sp-pill" id="sp-pill-cms"><div class="sp-dot blink"></div>Loading CMS</div>
+      </div>
+
+      <div class="sp-bar">
+        <div class="sp-bar-track"><div class="sp-bar-fill"></div></div>
+        <div class="sp-bar-label" id="sp-label">Initializing workspace…</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════ DECAP CMS ══════════════════════ -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+  <script>
+  /* ── 1. Splash label cycling ────────────────────────────────── */
+  (function () {
+    var msgs = [
+      "Initializing workspace…",
+      "Loading collections…",
+      "Connecting to repository…",
+      "Syncing content…",
+      "Preparing editor…",
+      "Almost ready…"
+    ];
+    var el = document.getElementById("sp-label");
+    var i  = 0;
+    var t  = setInterval(function () {
+      i = (i + 1) % msgs.length;
+      if (el) el.textContent = msgs[i];
+    }, 550);
+    window._splashLabelTimer = t;
+  }());
+
+  /* ── 2. Hide splash ─────────────────────────────────────────── */
+  function hideSplash() {
+    clearInterval(window._splashLabelTimer);
+
+    // Mark CMS pill as ready
+    var pill = document.getElementById("sp-pill-cms");
+    if (pill) {
+      var dot = pill.querySelector(".sp-dot");
+      if (dot) { dot.classList.remove("blink"); dot.classList.add("on"); }
+      pill.querySelector("*:last-child") && (pill.lastChild.textContent = "CMS Ready");
+    }
+    var label = document.getElementById("sp-label");
+    if (label) label.textContent = "Ready ✓";
+
+    setTimeout(function () {
+      var splash = document.getElementById("splash");
+      if (!splash) return;
+      splash.style.transition = "opacity 0.8s ease, transform 0.8s ease";
+      splash.style.opacity    = "0";
+      splash.style.transform  = "scale(1.03)";
+      setTimeout(function () {
+        if (splash.parentNode) splash.parentNode.removeChild(splash);
+        injectCMSStyles();
+      }, 800);
+    }, 500);
+  }
+  setTimeout(hideSplash, 3000);
+
+  /* ── 3. Netlify Identity → redirect after login ─────────────── */
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", function (user) {
+      if (!user) {
+        window.netlifyIdentity.on("login", function () {
+          document.location.href = "/admin/";
         });
       }
+    });
+  }
 
-      /* ── 3. Register preview styles (injected into preview iframe) */
-      CMS.registerPreviewStyle(`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  /* ── 4. Inject premium CSS into the Decap CMS shell ────────── */
+  function injectCMSStyles() {
+    var s = document.createElement("style");
+    s.id  = "dm-override";
+    s.textContent = [
+      /* ─ Global typography ─ */
+      "*, *::before, *::after {",
+      "  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;",
+      "  -webkit-font-smoothing: antialiased !important;",
+      "  -moz-osx-font-smoothing: grayscale !important;",
+      "}",
 
-        *, *::before, *::after { box-sizing: border-box; }
+      /* ─ Page background ─ */
+      "body { background: #f0f2f8 !important; }",
 
-        body {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          background: #f9fafb; color: #111827; margin: 0; padding: 0;
-        }
+      /* ─ Custom scrollbar ─ */
+      "::-webkit-scrollbar { width: 5px; height: 5px; }",
+      "::-webkit-scrollbar-track { background: transparent; }",
+      "::-webkit-scrollbar-thumb { background: rgba(100,116,139,.28); border-radius: 3px; }",
+      "::-webkit-scrollbar-thumb:hover { background: rgba(100,116,139,.48); }",
 
-        /* ── Blog post preview wrapper ─────────────────── */
-        .dm-preview {
-          max-width: 780px; margin: 0 auto; padding: 32px 24px 80px;
-        }
+      /* ─ Top header bar → deep navy ─ */
+      "header,",
+      "[class*='AppHeader'],[class*='appHeader'],[class*='app-header'],",
+      "[class*='Topbar'],[class*='topbar'],[class*='TopBar'],",
+      "[class*='NavBar'],[class*='navbar'],[class*='nav-bar'] {",
+      "  background: #0d1117 !important;",
+      "  border-bottom: 1px solid rgba(255,255,255,0.07) !important;",
+      "  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 32px rgba(0,0,0,.45) !important;",
+      "}",
+      "header *, header a, header button, header span,",
+      "[class*='AppHeader'] *, [class*='Topbar'] *, [class*='NavBar'] * {",
+      "  color: rgba(255,255,255,.82) !important;",
+      "}",
+      "header a:hover, [class*='AppHeader'] a:hover { color: #a78bfa !important; }",
 
-        /* Cover image */
-        .dm-cover {
-          width: 100%; height: 260px; object-fit: cover;
-          border-radius: 16px; margin-bottom: 24px;
-          box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-        }
-        .dm-cover-placeholder {
-          width: 100%; height: 220px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 16px; margin-bottom: 24px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 48px; color: rgba(255,255,255,0.6);
-        }
+      /* ─ Brand / logo area ─ */
+      "[class*='brand'],[class*='Brand'],[class*='logo'],[class*='Logo'] {",
+      "  font-weight: 800 !important; letter-spacing: -0.04em !important;",
+      "  color: #fff !important;",
+      "}",
 
-        /* Meta row */
-        .dm-meta {
-          display: flex; flex-wrap: wrap; gap: 10px;
-          align-items: center; margin-bottom: 16px;
-        }
-        .dm-badge {
-          display: inline-block;
-          background: linear-gradient(135deg, #667eea, #764ba2);
-          color: #fff; font-size: 11px; font-weight: 700;
-          letter-spacing: 0.08em; text-transform: uppercase;
-          padding: 4px 12px; border-radius: 20px;
-        }
-        .dm-readtime {
-          font-size: 13px; color: #6b7280; display: flex; align-items: center; gap: 4px;
-        }
-        .dm-date { font-size: 13px; color: #9ca3af; }
+      /* ─ Left sidebar → dark slate ─ */
+      "aside, [class*='Sidebar'],[class*='sidebar'],",
+      "[class*='NavMenu'],[class*='navMenu'],[class*='nav-menu'],",
+      "[class*='CollectionNav'],[class*='collectionNav'] {",
+      "  background: #111827 !important;",
+      "  border-right: 1px solid rgba(255,255,255,0.06) !important;",
+      "  box-shadow: 2px 0 16px rgba(0,0,0,.25) !important;",
+      "}",
+      "aside *, [class*='Sidebar'] *, [class*='NavMenu'] * {",
+      "  color: rgba(255,255,255,.55) !important;",
+      "}",
+      "aside a:hover, [class*='Sidebar'] a:hover,",
+      "[class*='NavMenu'] a:hover {",
+      "  background: rgba(139,92,246,.14) !important;",
+      "  color: rgba(255,255,255,.92) !important;",
+      "  border-radius: 8px !important;",
+      "}",
+      "[class*='active'],[class*='isActive'],[aria-current='page'],",
+      "[class*='selected'],[class*='Selected'] {",
+      "  background: rgba(139,92,246,.18) !important;",
+      "  color: #c4b5fd !important;",
+      "  border-radius: 8px !important;",
+      "}",
+
+      /* ─ Main view / content area ─ */
+      "main,[role='main'],",
+      "[class*='MainView'],[class*='mainView'],",
+      "[class*='ContentView'],[class*='contentView'] {",
+      "  background: #f0f2f8 !important;",
+      "}",
+
+      /* ─ Collection list cards ─ */
+      "[class*='ListItem'],[class*='listItem'],[class*='list-item'],",
+      "[class*='EntryCard'],[class*='entryCard'],[class*='entry-card'] {",
+      "  background: #fff !important;",
+      "  border: 1px solid rgba(226,232,240,.9) !important;",
+      "  border-radius: 14px !important;",
+      "  box-shadow: 0 1px 4px rgba(0,0,0,.05), 0 0 0 0 rgba(124,58,237,0) !important;",
+      "  transition: box-shadow .2s ease, transform .2s ease, border-color .2s !important;",
+      "}",
+      "[class*='ListItem']:hover,[class*='EntryCard']:hover {",
+      "  box-shadow: 0 6px 24px rgba(0,0,0,.10), 0 0 0 2px rgba(124,58,237,.15) !important;",
+      "  border-color: rgba(124,58,237,.3) !important;",
+      "  transform: translateY(-2px) !important;",
+      "}",
+
+      /* ─ Editor / form wrapper ─ */
+      "[class*='EditorContainer'],[class*='editorContainer'],",
+      "[class*='ControlPane'],[class*='controlPane'],",
+      "form {",
+      "  background: #fff !important;",
+      "  border-radius: 18px !important;",
+      "  border: 1px solid rgba(226,232,240,.9) !important;",
+      "  box-shadow: 0 2px 8px rgba(0,0,0,.05) !important;",
+      "}",
+
+      /* ─ Form field labels ─ */
+      "label,[class*='Label'],[class*='label'],",
+      "[class*='FieldLabel'],[class*='fieldLabel'] {",
+      "  font-size: 11px !important;",
+      "  font-weight: 700 !important;",
+      "  letter-spacing: .08em !important;",
+      "  text-transform: uppercase !important;",
+      "  color: #64748b !important;",
+      "  margin-bottom: 6px !important;",
+      "}",
+
+      /* ─ Hint / description text ─ */
+      "[class*='Hint'],[class*='hint'],",
+      "[class*='FieldHint'],[class*='fieldHint'],",
+      "[class*='description'],[class*='Description'] {",
+      "  font-size: 12px !important;",
+      "  color: #94a3b8 !important;",
+      "  line-height: 1.5 !important;",
+      "}",
+
+      /* ─ Text inputs ─ */
+      "input[type='text'],input[type='email'],input[type='url'],",
+      "input[type='search'],input[type='number'],input[type='date'],",
+      "input[type='datetime-local'],textarea,select {",
+      "  background: #f8fafc !important;",
+      "  border: 1.5px solid #e2e8f0 !important;",
+      "  border-radius: 10px !important;",
+      "  color: #0f172a !important;",
+      "  font-size: 14px !important;",
+      "  padding: 10px 14px !important;",
+      "  line-height: 1.5 !important;",
+      "  transition: border-color .15s, box-shadow .15s, background .15s !important;",
+      "}",
+      "input:focus, textarea:focus, select:focus {",
+      "  border-color: #7c3aed !important;",
+      "  box-shadow: 0 0 0 3px rgba(124,58,237,.14) !important;",
+      "  outline: none !important;",
+      "  background: #fff !important;",
+      "}",
+      "input::placeholder, textarea::placeholder { color: #94a3b8 !important; }",
+
+      /* ─ Markdown editor toolbar ─ */
+      "[class*='Toolbar'],[class*='toolbar'],",
+      "[class*='EditorToolbar'],[class*='editorToolbar'] {",
+      "  background: #f8fafc !important;",
+      "  border-bottom: 1px solid #e2e8f0 !important;",
+      "  border-radius: 12px 12px 0 0 !important;",
+      "  padding: 6px 8px !important;",
+      "  gap: 2px !important;",
+      "}",
+      "[class*='Toolbar'] button,[class*='toolbar'] button {",
+      "  border-radius: 7px !important;",
+      "  padding: 5px 9px !important;",
+      "  background: transparent !important;",
+      "  color: #64748b !important;",
+      "  border: none !important;",
+      "  box-shadow: none !important;",
+      "  font-size: 13px !important;",
+      "  transition: background .12s, color .12s !important;",
+      "}",
+      "[class*='Toolbar'] button:hover {",
+      "  background: #e2e8f0 !important; color: #1e293b !important;",
+      "}",
+      "[class*='Toolbar'] button[class*='active'],",
+      "[class*='Toolbar'] button[aria-pressed='true'] {",
+      "  background: rgba(124,58,237,.1) !important;",
+      "  color: #7c3aed !important;",
+      "}",
+
+      /* ─ Primary buttons (Publish / Save) ─ */
+      "button[class*='primary'],button[class*='Primary'],",
+      "[class*='saveButton'],[class*='SaveButton'],",
+      "[class*='publishButton'],[class*='PublishButton'],",
+      "[class*='create'],[class*='Create']:not([class*='entry']):not([class*='collection']),",
+      "button[type='submit']:not([class*='cancel']):not([class*='Cancel']) {",
+      "  background: linear-gradient(135deg,#7c3aed,#6d28d9) !important;",
+      "  color: #fff !important;",
+      "  border: none !important;",
+      "  border-radius: 10px !important;",
+      "  padding: 10px 20px !important;",
+      "  font-weight: 600 !important; font-size: 13px !important;",
+      "  letter-spacing: -0.01em !important;",
+      "  box-shadow: 0 2px 8px rgba(124,58,237,.35), 0 1px 2px rgba(0,0,0,.1) !important;",
+      "  transition: all .18s cubic-bezier(.4,0,.2,1) !important;",
+      "  cursor: pointer !important;",
+      "}",
+      "button[class*='primary']:hover,[class*='saveButton']:hover,",
+      "[class*='publishButton']:hover {",
+      "  background: linear-gradient(135deg,#6d28d9,#5b21b6) !important;",
+      "  box-shadow: 0 4px 16px rgba(124,58,237,.45) !important;",
+      "  transform: translateY(-1px) !important;",
+      "}",
+
+      /* ─ Secondary buttons ─ */
+      "button[class*='secondary'],button[class*='Secondary'],",
+      "[class*='cancelButton'],[class*='CancelButton'],",
+      "button[class*='default'],button[class*='Default'] {",
+      "  background: #fff !important;",
+      "  color: #475569 !important;",
+      "  border: 1.5px solid #e2e8f0 !important;",
+      "  border-radius: 10px !important;",
+      "  padding: 9px 18px !important;",
+      "  font-weight: 500 !important; font-size: 13px !important;",
+      "  box-shadow: 0 1px 2px rgba(0,0,0,.06) !important;",
+      "  transition: all .15s ease !important;",
+      "}",
+      "button[class*='secondary']:hover { background: #f1f5f9 !important; border-color: #cbd5e1 !important; }",
+
+      /* ─ Danger buttons ─ */
+      "button[class*='danger'],button[class*='Danger'],",
+      "button[class*='delete'],button[class*='Delete'] {",
+      "  background: #fff !important; color: #dc2626 !important;",
+      "  border: 1.5px solid #fca5a5 !important;",
+      "  border-radius: 10px !important;",
+      "  transition: all .15s !important;",
+      "}",
+      "button[class*='danger']:hover { background: #fef2f2 !important; border-color: #ef4444 !important; }",
+
+      /* ─ Dropdown menus ─ */
+      "[class*='Dropdown'],[class*='dropdown'],",
+      "[class*='Menu'],[class*='menu'],",
+      "[role='menu'] {",
+      "  background: #1e293b !important;",
+      "  border: 1px solid rgba(255,255,255,0.08) !important;",
+      "  border-radius: 12px !important;",
+      "  box-shadow: 0 20px 60px rgba(0,0,0,.45), 0 4px 16px rgba(0,0,0,.3) !important;",
+      "  padding: 6px !important;",
+      "  backdrop-filter: blur(12px) !important;",
+      "}",
+      "[role='menu'] [role='menuitem'],[class*='MenuItem'],[class*='menuItem'] {",
+      "  color: rgba(255,255,255,.75) !important;",
+      "  border-radius: 8px !important;",
+      "  padding: 8px 12px !important;",
+      "  font-size: 13px !important;",
+      "  transition: background .12s !important;",
+      "}",
+      "[role='menu'] [role='menuitem']:hover { background: rgba(139,92,246,.2) !important; color: #fff !important; }",
+
+      /* ─ Tags / badges / chips ─ */
+      "[class*='Badge'],[class*='badge'],",
+      "[class*='Tag'],[class*='tag'],",
+      "[class*='Chip'],[class*='chip'] {",
+      "  background: rgba(124,58,237,.1) !important;",
+      "  color: #7c3aed !important;",
+      "  border-radius: 6px !important;",
+      "  padding: 3px 10px !important;",
+      "  font-size: 11px !important; font-weight: 700 !important;",
+      "  letter-spacing: .04em !important;",
+      "}",
+
+      /* ─ Search bar ─ */
+      "[class*='Search'] input,[class*='search'] input,",
+      "input[placeholder*='search'],input[placeholder*='Search'] {",
+      "  border-radius: 10px !important;",
+      "  border: 1.5px solid #e2e8f0 !important;",
+      "  background: #fff !important;",
+      "  padding-left: 38px !important;",
+      "}",
+
+      /* ─ Image upload / dropzone ─ */
+      "[class*='Dropzone'],[class*='dropzone'],",
+      "[class*='DropArea'],[class*='ImageUpload'],",
+      "[class*='MediaLibrary'] [class*='empty'] {",
+      "  border: 2px dashed rgba(124,58,237,.35) !important;",
+      "  border-radius: 14px !important;",
+      "  background: rgba(124,58,237,.04) !important;",
+      "  transition: all .2s !important;",
+      "}",
+      "[class*='Dropzone']:hover {",
+      "  border-color: #7c3aed !important;",
+      "  background: rgba(124,58,237,.08) !important;",
+      "}",
+
+      /* ─ Media library grid ─ */
+      "[class*='MediaLibrary'],[class*='mediaLibrary'] {",
+      "  background: #f0f2f8 !important;",
+      "  border-radius: 16px !important;",
+      "}",
+      "[class*='MediaLibrary'] img {",
+      "  border-radius: 10px !important;",
+      "  transition: transform .2s, box-shadow .2s !important;",
+      "}",
+      "[class*='MediaLibrary'] img:hover {",
+      "  transform: scale(1.03) !important;",
+      "  box-shadow: 0 8px 24px rgba(0,0,0,.15) !important;",
+      "}",
+
+      /* ─ Modals / overlays ─ */
+      "[class*='Modal'],[class*='modal'],",
+      "[class*='Dialog'],[class*='dialog'],",
+      "[role='dialog'] {",
+      "  border-radius: 20px !important;",
+      "  box-shadow: 0 32px 96px rgba(0,0,0,.35), 0 8px 32px rgba(0,0,0,.2) !important;",
+      "  border: 1px solid rgba(255,255,255,.08) !important;",
+      "}",
+      "[class*='Overlay'],[class*='overlay'],",
+      "[class*='backdrop'],[class*='Backdrop'] {",
+      "  background: rgba(4,0,26,.7) !important;",
+      "  backdrop-filter: blur(8px) !important;",
+      "}",
+
+      /* ─ Toast notifications ─ */
+      "[class*='Toast'],[class*='toast'],",
+      "[class*='Alert'],[class*='alert'],",
+      "[class*='Notification'],[class*='notification'] {",
+      "  border-radius: 14px !important;",
+      "  font-size: 13px !important; font-weight: 500 !important;",
+      "  box-shadow: 0 12px 40px rgba(0,0,0,.25) !important;",
+      "  border: 1px solid rgba(255,255,255,.1) !important;",
+      "  backdrop-filter: blur(12px) !important;",
+      "}",
+
+      /* ─ Section dividers in editor ─ */
+      "hr,[class*='Divider'],[class*='divider'] {",
+      "  border-color: rgba(226,232,240,.8) !important;",
+      "}",
+
+      /* ─ Breadcrumb / page title ─ */
+      "[class*='Breadcrumb'],[class*='breadcrumb'],",
+      "[class*='PageTitle'],[class*='pageTitle'] {",
+      "  font-weight: 700 !important;",
+      "  font-size: 18px !important;",
+      "  letter-spacing: -0.03em !important;",
+      "  color: #0f172a !important;",
+      "}",
+
+      /* ─ List view header / sort bar ─ */
+      "[class*='ListHeader'],[class*='listHeader'],",
+      "[class*='CollectionHeader'],[class*='collectionHeader'] {",
+      "  background: #fff !important;",
+      "  border-radius: 14px !important;",
+      "  border: 1px solid rgba(226,232,240,.8) !important;",
+      "  margin-bottom: 8px !important;",
+      "}",
+
+      /* ─ View filter / group buttons ─ */
+      "[class*='ViewControl'],[class*='viewControl'],",
+      "[class*='FilterButton'],[class*='filterButton'] {",
+      "  border-radius: 8px !important;",
+      "  font-size: 12px !important; font-weight: 600 !important;",
+      "}",
+
+      /* ─ Select widget custom ─ */
+      "select {",
+      "  appearance: none !important;",
+      "  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\") !important;",
+      "  background-repeat: no-repeat !important;",
+      "  background-position: right 12px center !important;",
+      "  padding-right: 36px !important;",
+      "}",
+
+      /* ─ Collapse/expand arrows ─ */
+      "[class*='Collapse'],[class*='collapse'],",
+      "[class*='Accordion'],[class*='accordion'] {",
+      "  border-radius: 12px !important;",
+      "  border: 1px solid rgba(226,232,240,.8) !important;",
+      "  background: #fff !important;",
+      "  overflow: hidden !important;",
+      "  margin-bottom: 8px !important;",
+      "}",
+
+      /* ─ New entry / create button (floating) ─ */
+      "[class*='CreateButton'],[class*='createButton'],",
+      "[class*='NewButton'],[class*='newButton'],",
+      "a[class*='create'],a[class*='new'] {",
+      "  background: linear-gradient(135deg,#7c3aed,#6d28d9) !important;",
+      "  color: #fff !important;",
+      "  border-radius: 12px !important;",
+      "  font-weight: 700 !important;",
+      "  box-shadow: 0 4px 16px rgba(124,58,237,.4) !important;",
+      "}",
+    ].join("\n");
+    document.head.appendChild(s);
+  }
+
+  /* ── 5. Preview styles (injected into preview iframe) ─────── */
+  CMS.registerPreviewStyle(
+    "@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');" +
+    "*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }" +
+    "body { font-family: 'Inter', sans-serif; background: #f9fafb; color: #111827; }" +
+
+    /* Wrapper */
+    ".dm { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }" +
+
+    /* Cover image */
+    ".dm-img { width:100%; height:260px; object-fit:cover; border-radius:16px;" +
+    "  margin-bottom:24px; box-shadow:0 4px 24px rgba(0,0,0,.12); display:block; }" +
+    ".dm-img-ph { width:100%; height:200px; border-radius:16px; margin-bottom:24px;" +
+    "  background:linear-gradient(135deg,#7c3aed,#6366f1,#ec4899);" +
+    "  display:flex; align-items:center; justify-content:center;" +
+    "  font-size:52px; color:rgba(255,255,255,.5); }" +
+
+    /* Meta row */
+    ".dm-meta { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; }" +
+    ".dm-cat { display:inline-flex; align-items:center; gap:6px;" +
+    "  background:linear-gradient(135deg,#7c3aed,#6d28d9);" +
+    "  color:#fff; font-size:11px; font-weight:700; letter-spacing:.08em;" +
+    "  text-transform:uppercase; padding:5px 13px; border-radius:99px;" +
+    "  box-shadow:0 2px 8px rgba(124,58,237,.3); }" +
+    ".dm-rt { font-size:13px; color:#6b7280; display:flex; align-items:center; gap:4px; }" +
+    ".dm-date { font-size:13px; color:#9ca3af; display:flex; align-items:center; gap:4px; }" +
+
+    /* Title */
+    ".dm-title { font-size:2rem; font-weight:800; color:#111827;" +
+    "  line-height:1.18; letter-spacing:-.04em; margin:0 0 14px; }" +
+
+    /* Description */
+    ".dm-desc { font-size:1.05rem; color:#4b5563; line-height:1.65;" +
+    "  margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #e5e7eb; }" +
+
+    /* Author */
+    ".dm-author { display:flex; align-items:center; gap:12px; margin-bottom:28px; }" +
+    ".dm-av { width:42px; height:42px; border-radius:50%; flex-shrink:0;" +
+    "  background:linear-gradient(135deg,#a78bfa,#f9a8d4);" +
+    "  display:flex; align-items:center; justify-content:center;" +
+    "  font-size:17px; font-weight:800; color:#fff; }" +
+    ".dm-an { font-weight:700; font-size:14px; color:#111827; }" +
+    ".dm-ar { font-size:12px; color:#6b7280; margin-top:2px; }" +
+
+    /* Body */
+    ".dm-body { font-size:1rem; line-height:1.78; color:#374151; }" +
+    ".dm-body h2 { font-size:1.45rem; font-weight:800; color:#111827;" +
+    "  margin:36px 0 14px; letter-spacing:-.03em; padding-bottom:8px;" +
+    "  border-bottom:2px solid #f3f4f6; }" +
+    ".dm-body h3 { font-size:1.15rem; font-weight:700; color:#1f2937;" +
+    "  margin:26px 0 10px; }" +
+    ".dm-body p { margin:0 0 18px; }" +
+    ".dm-body ul,.dm-body ol { padding-left:28px; margin:0 0 18px; }" +
+    ".dm-body li { margin-bottom:6px; }" +
+    ".dm-body strong { color:#111827; font-weight:700; }" +
+    ".dm-body em { color:#4b5563; }" +
+    ".dm-body a { color:#7c3aed; text-decoration:underline; text-underline-offset:3px; }" +
+    ".dm-body code { background:#f1f5f9; padding:2px 7px; border-radius:5px;" +
+    "  font-family:ui-monospace,monospace; font-size:.875em; color:#6d28d9; }" +
+    ".dm-body pre { background:#1e293b; color:#e2e8f0; padding:18px 20px;" +
+    "  border-radius:12px; overflow-x:auto; margin:0 0 18px; }" +
+    ".dm-body blockquote { border-left:4px solid #7c3aed;" +
+    "  background:linear-gradient(90deg,rgba(124,58,237,.06),transparent);" +
+    "  padding:14px 20px; margin:20px 0; border-radius:0 10px 10px 0;" +
+    "  color:#4b5563; font-style:italic; }" +
+    ".dm-body hr { border:none; border-top:1px solid #e5e7eb; margin:28px 0; }" +
+    ".dm-body img { max-width:100%; border-radius:10px; margin:8px 0; }" +
+
+    /* Empty state */
+    ".dm-empty { text-align:center; padding:80px 20px; color:#9ca3af; }" +
+    ".dm-empty-icon { font-size:56px; margin-bottom:16px; }" +
+    ".dm-empty-text { font-size:14px; font-weight:500; }",
+    { raw: true }
+  );
+
+  /* ── 6. Blog post live preview template ───────────────────── */
+  var BlogPostPreview = createClass({
+    render: function () {
+      var e    = this.props.entry;
+      var d    = e.get("data");
+      var title  = d.get("title")       || "Untitled Post";
+      var desc   = d.get("description") || "";
+      var cat    = d.get("category")    || "";
+      var author = d.get("author_name") || "DestinyMatrix Team";
+      var role   = d.get("author_role") || "";
+      var rt     = d.get("readTime")    || "";
+      var date   = d.get("publishedAt") || "";
+      var img    = d.get("ogImage")     || "";
+      var body   = this.props.widgetFor("body");
+      var init   = (author.trim()[0] || "D").toUpperCase();
+
+      var dateStr = "";
+      if (date) {
+        try { dateStr = new Date(date).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}); }
+        catch(e2) { dateStr = String(date); }
+      }
+
+      return h("div", { className: "dm" },
+
+        /* Cover */
+        img
+          ? h("img", { className: "dm-img", src: img, alt: title })
+          : h("div", { className: "dm-img-ph" }, "✦"),
+
+        /* Meta */
+        h("div", { className: "dm-meta" },
+          cat     ? h("span", { className: "dm-cat" }, cat) : null,
+          rt      ? h("span", { className: "dm-rt" }, "⏱ ", rt) : null,
+          dateStr ? h("span", { className: "dm-date" }, "📅 ", dateStr) : null
+        ),
 
         /* Title */
-        .dm-title {
-          font-size: 2rem; font-weight: 800; color: #111827;
-          line-height: 1.2; letter-spacing: -0.03em;
-          margin: 0 0 14px;
-        }
+        h("h1", { className: "dm-title" }, title),
 
         /* Description */
-        .dm-description {
-          font-size: 1.1rem; color: #4b5563; line-height: 1.65;
-          margin-bottom: 20px; padding-bottom: 20px;
-          border-bottom: 1px solid #e5e7eb;
-        }
+        desc ? h("p", { className: "dm-desc" }, desc) : null,
 
         /* Author */
-        .dm-author {
-          display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
-        }
-        .dm-author-avatar {
-          width: 40px; height: 40px; border-radius: 50%;
-          background: linear-gradient(135deg, #a78bfa, #f9a8d4);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 18px; color: white; font-weight: 700; flex-shrink: 0;
-        }
-        .dm-author-name { font-weight: 600; font-size: 14px; color: #111827; }
-        .dm-author-role { font-size: 12px; color: #6b7280; }
+        h("div", { className: "dm-author" },
+          h("div", { className: "dm-av" }, init),
+          h("div", {},
+            h("div", { className: "dm-an" }, author),
+            role ? h("div", { className: "dm-ar" }, role) : null
+          )
+        ),
 
-        /* Article body */
-        .dm-body { font-size: 1rem; line-height: 1.75; color: #374151; }
-        .dm-body h2 {
-          font-size: 1.5rem; font-weight: 700; color: #111827;
-          margin: 36px 0 14px; letter-spacing: -0.02em;
-          padding-bottom: 8px; border-bottom: 2px solid #f3f4f6;
-        }
-        .dm-body h3 { font-size: 1.2rem; font-weight: 600; color: #1f2937; margin: 28px 0 10px; }
-        .dm-body p { margin: 0 0 18px; }
-        .dm-body ul, .dm-body ol { padding-left: 28px; margin: 0 0 18px; }
-        .dm-body li { margin-bottom: 6px; }
-        .dm-body strong { color: #111827; font-weight: 700; }
-        .dm-body em { color: #4b5563; }
-        .dm-body blockquote {
-          border-left: 4px solid #764ba2;
-          background: linear-gradient(135deg, rgba(102,126,234,0.05), rgba(118,75,162,0.05));
-          padding: 16px 20px; margin: 20px 0;
-          border-radius: 0 8px 8px 0; color: #4b5563; font-style: italic;
-        }
-        .dm-body a { color: #764ba2; text-decoration: underline; }
-        .dm-body code {
-          background: #f3f4f6; padding: 2px 6px; border-radius: 4px;
-          font-family: monospace; font-size: 0.9em; color: #6d28d9;
-        }
-        .dm-body hr { border: none; border-top: 1px solid #e5e7eb; margin: 28px 0; }
+        /* Body */
+        body
+          ? h("div", { className: "dm-body" }, body)
+          : h("div", { className: "dm-empty" },
+              h("div", { className: "dm-empty-icon" }, "✍️"),
+              h("div", { className: "dm-empty-text" }, "Start writing on the left — your preview appears here in real time.")
+            )
+      );
+    }
+  });
 
-        /* Empty state */
-        .dm-empty {
-          text-align: center; padding: 60px 20px; color: #9ca3af;
-        }
-        .dm-empty .dm-empty-icon { font-size: 48px; margin-bottom: 12px; }
-        .dm-empty p { font-size: 14px; }
-      `, { raw: true });
-
-      /* ── 4. Blog post live preview template ───────────────────── */
-      var h = window.h;
-
-      var BlogPostPreview = createClass({
-        render: function () {
-          var entry   = this.props.entry;
-          var data    = entry.get("data");
-          var title   = data.get("title")       || "Untitled Post";
-          var desc    = data.get("description") || "";
-          var cat     = data.get("category")    || "";
-          var author  = data.get("author_name") || "DestinyMatrix Team";
-          var role    = data.get("author_role") || "Numerology Writer";
-          var rt      = data.get("readTime")    || "";
-          var date    = data.get("publishedAt") || "";
-          var imgPath = data.get("ogImage")     || "";
-          var body    = this.props.widgetFor("body");
-          var initial = author ? author.trim()[0].toUpperCase() : "D";
-
-          // Format date nicely if present
-          var dateStr = "";
-          if (date) {
-            try {
-              dateStr = new Date(date).toLocaleDateString("en-US", {
-                year: "numeric", month: "long", day: "numeric"
-              });
-            } catch(e) { dateStr = String(date); }
-          }
-
-          return h("div", { className: "dm-preview" },
-
-            /* Cover image or gradient placeholder */
-            imgPath
-              ? h("img", { className: "dm-cover", src: imgPath, alt: title })
-              : h("div", { className: "dm-cover-placeholder" }, "✦"),
-
-            /* Category + read time + date */
-            h("div", { className: "dm-meta" },
-              cat  ? h("span", { className: "dm-badge" }, cat) : null,
-              rt   ? h("span", { className: "dm-readtime" }, "⏱ ", rt) : null,
-              dateStr ? h("span", { className: "dm-date" }, "📅 ", dateStr) : null
-            ),
-
-            /* Title */
-            h("h1", { className: "dm-title" }, title),
-
-            /* Description */
-            desc ? h("p", { className: "dm-description" }, desc) : null,
-
-            /* Author */
-            h("div", { className: "dm-author" },
-              h("div", { className: "dm-author-avatar" }, initial),
-              h("div", {},
-                h("div", { className: "dm-author-name" }, author),
-                h("div", { className: "dm-author-role" }, role)
-              )
-            ),
-
-            /* Article body */
-            body
-              ? h("div", { className: "dm-body" }, body)
-              : h("div", { className: "dm-empty" },
-                  h("div", { className: "dm-empty-icon" }, "✍️"),
-                  h("p", {}, "Start typing your article on the left to see a preview here.")
-                )
-          );
-        }
-      });
-
-      CMS.registerPreviewTemplate("blog", BlogPostPreview);
-    </script>
-  </body>
+  CMS.registerPreviewTemplate("blog", BlogPostPreview);
+  </script>
+</body>
 </html>
