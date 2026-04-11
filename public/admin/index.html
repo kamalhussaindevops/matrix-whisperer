@@ -644,38 +644,63 @@
     window.__ldTimer = t;
   }());
 
-  /* ── Show dashboard after load ────────────────────────────── */
+  /* ── Show dashboard — idempotent, safe to call multiple times ── */
+  var _revealed = false;
   function revealDashboard() {
+    if (_revealed) return;   /* ← guard: never run twice */
+    _revealed = true;
     clearInterval(window.__ldTimer);
-    var ld  = document.getElementById("loading");
-    var db  = document.getElementById("dashboard");
-    if (!ld || !db) return;
-    ld.style.transition = "opacity .7s ease, transform .7s ease";
-    ld.style.opacity    = "0";
-    ld.style.transform  = "scale(1.04)";
-    setTimeout(function () {
-      if (ld.parentNode) ld.parentNode.removeChild(ld);
-      db.classList.add("visible");
-    }, 700);
+    clearTimeout(window.__ldFallback);
+
+    var ld = document.getElementById("loading");
+    var db = document.getElementById("dashboard");
+    if (ld) {
+      ld.style.transition = "opacity .6s ease, transform .6s ease";
+      ld.style.opacity    = "0";
+      ld.style.transform  = "scale(1.03)";
+      setTimeout(function () {
+        if (ld.parentNode) ld.parentNode.removeChild(ld);
+      }, 650);
+    }
+    if (db) db.classList.add("visible");
   }
-  setTimeout(revealDashboard, 2800);
+
+  /* Absolute safety timeout — reveals dashboard after 4 s no matter what */
+  window.__ldFallback = setTimeout(revealDashboard, 4000);
 
   /* ── Netlify Identity ─────────────────────────────────────── */
-  var userEmail = "Admin";
+  function applyUser(user) {
+    if (!user) return;
+    var email   = user.email || (user.user_metadata && user.user_metadata.full_name) || "Admin";
+    var emailEl = document.getElementById("user-email");
+    var avEl    = document.getElementById("user-av");
+    if (emailEl) emailEl.textContent = email.split("@")[0];
+    if (avEl)    avEl.textContent    = (email[0] || "A").toUpperCase();
+  }
+
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on("init", function (user) {
-      if (!user) {
-        window.netlifyIdentity.open("login");
+      if (user) {
+        /* Already logged in → update UI and reveal dashboard after short animation */
+        applyUser(user);
+        clearTimeout(window.__ldFallback);
+        window.__ldFallback = setTimeout(revealDashboard, 1400);
       } else {
-        userEmail = user.email || (user.user_metadata && user.user_metadata.full_name) || "Admin";
-        var emailEl = document.getElementById("user-email");
-        var avEl    = document.getElementById("user-av");
-        if (emailEl) emailEl.textContent = userEmail.split("@")[0];
-        if (avEl)    avEl.textContent    = (userEmail[0] || "A").toUpperCase();
+        /* Not logged in → show login modal; dashboard will reveal after login */
+        window.netlifyIdentity.open("login");
       }
     });
-    window.netlifyIdentity.on("login", function () {
-      document.location.href = "/admin/";
+
+    window.netlifyIdentity.on("login", function (user) {
+      /* !! No location.href redirect — that was causing the reload loop !! */
+      applyUser(user);
+      /* Small delay so the login modal closes smoothly first */
+      setTimeout(revealDashboard, 600);
+    });
+
+    window.netlifyIdentity.on("logout", function () {
+      /* On sign-out, reload cleanly so login prompt appears again */
+      window.location.reload();
     });
   }
 
