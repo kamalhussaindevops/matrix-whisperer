@@ -1,13 +1,19 @@
 ---
-title: "Year Forecast Planning with Destiny Matrix Numerology"
-description: "Use destiny matrix year forecast cycles to plan goals, avoid timing mistakes, and align career, relationships, and wellness with yearly energy."
-category: "Forecasting"
-publishedAt: "2026-03-21"
-readTime: "11 min read"
-tags: ["year forecast", "planning", "numerology timing", "career strategy", "annual cycle"]
-author_name: "Marta Leone"
-author_role: "Forecast Strategy Analyst"
-ogImage: "/blog/images/year-forecast-destiny-matrix-planning.jpg"
+title: Year Forecast Planning with Destiny Matrix Numerology
+description: Use destiny matrix year forecast cycles to plan goals, avoid timing
+  mistakes, and align career, relationships, and wellness with yearly energy.
+category: Forecasting
+publishedAt: 2026-03-21
+readTime: 11 min read
+author_name: Marta Leone
+author_role: Forecast Strategy Analyst
+tags:
+  - year forecast
+  - planning
+  - numerology timing
+  - career strategy
+  - annual cycle
+ogImage: /blog/images/untitled-design-2-.png
 ---
 
 ## Why Timing Changes Everything in Numerology
