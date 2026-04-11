@@ -1,13 +1,20 @@
 ---
 title: "Destiny Matrix Numerology Guide: Read Your Chart Step by Step"
-description: "Master destiny matrix numerology with a practical step-by-step guide to reading chart positions, purpose lines, and real-life action patterns."
-category: "Numerology"
-publishedAt: "2026-03-28"
-readTime: "12 min read"
-tags: ["destiny matrix", "numerology guide", "chart reading", "life purpose", "self-discovery"]
-author_name: "Elena Markov"
-author_role: "Numerology Research Editor"
-ogImage: "/blog/images/destiny-matrix-numerology-guide.jpg"
+description: Master destiny matrix numerology with a practical step-by-step
+  guide to reading chart positions, purpose lines, and real-life action
+  patterns.
+category: Numerology
+publishedAt: 2026-03-28
+readTime: 12 min read
+author_name: Elena Markov
+author_role: Numerology Research Editor
+tags:
+  - destiny matrix
+  - numerology guide
+  - chart reading
+  - life purpose
+  - self-discovery
+ogImage: /blog/images/untitled-design-2-.png
 ---
 
 ## Why the Destiny Matrix Is More Than a Personality Quiz
