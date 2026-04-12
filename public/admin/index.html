@@ -872,10 +872,12 @@
   }
 
   /* ════════════════════════════════════════════════════════════
-     INJECT LEAN CSS INTO DECAP CMS
-     Rules: colour/border/border-radius/shadow ONLY on buttons.
-     Never override padding or font-size on buttons — that causes
-     text to overflow the button container.
+     INJECT PROFESSIONAL DASHBOARD STYLES INTO DECAP CMS
+     Matches the Architect-style admin dashboard:
+     • Header  — white, clean, dark text, purple active tabs
+     • Sidebar — deep navy (#1e2d4a) with white labels + section groups
+     • Content — light gray (#f4f6f9) with white cards & shadows
+     • Buttons — colour only, never touch padding/font-size
   ════════════════════════════════════════════════════════════ */
   var _stylesInjected = false;
   function injectCMSStyles() {
@@ -884,98 +886,257 @@
 
     var css = "";
 
-    /* ── Safety: box-sizing on everything ── */
+    /* ── Foundation ── */
     css += "#nc-root *{box-sizing:border-box!important;}";
-
-    /* ── Font ── */
     css += "#nc-root{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif!important;-webkit-font-smoothing:antialiased!important;}";
 
-    /* ── Thin purple scrollbar ── */
-    css += "#nc-root ::-webkit-scrollbar{width:5px;height:5px;}";
-    css += "#nc-root ::-webkit-scrollbar-thumb{background:rgba(124,58,237,.35);border-radius:3px;}";
+    /* ── Scrollbar ── */
+    css += "#nc-root ::-webkit-scrollbar{width:4px;height:4px;}";
+    css += "#nc-root ::-webkit-scrollbar-track{background:transparent;}";
+    css += "#nc-root ::-webkit-scrollbar-thumb{background:rgba(124,58,237,.25);border-radius:4px;}";
 
-    /* ════ HEADER (dark navy) ════════════════════════════════════ */
-    css += "#nc-root header{background:#0d1117!important;border-bottom:1px solid rgba(255,255,255,.07)!important;box-shadow:0 2px 16px rgba(0,0,0,.4)!important;}";
-    css += "#nc-root header a,#nc-root header span,#nc-root header label{color:rgba(255,255,255,.8)!important;}";
-    css += "#nc-root header a:hover{color:#a78bfa!important;}";
-    css += "#nc-root header svg path,#nc-root header svg rect,#nc-root header svg circle{fill:rgba(255,255,255,.55)!important;stroke:none!important;}";
-    css += "#nc-root header [class*='active'],#nc-root header [aria-selected='true']{color:#a78bfa!important;border-color:#7c3aed!important;}";
+    /* ════════════════════════════════════════════════════════
+       HEADER — white background, dark text (like the image)
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root header{" +
+      "background:#ffffff!important;" +
+      "border-bottom:1px solid #e8ecf0!important;" +
+      "box-shadow:0 1px 6px rgba(0,0,0,.06)!important;}";
 
-    /* ════ SIDEBAR (dark slate) ══════════════════════════════════ */
-    css += "#nc-root aside,#nc-root [role='navigation']{background:#111827!important;border-right:1px solid rgba(255,255,255,.06)!important;}";
-    css += "#nc-root aside a,#nc-root aside span,#nc-root aside p,#nc-root aside li,#nc-root aside button{color:rgba(255,255,255,.6)!important;}";
-    css += "#nc-root aside a:hover,#nc-root aside button:hover{color:#fff!important;background:rgba(139,92,246,.15)!important;border-radius:8px!important;}";
-    css += "#nc-root aside [class*='active'],#nc-root aside [aria-current]{color:#c4b5fd!important;background:rgba(139,92,246,.18)!important;border-radius:8px!important;}";
-    css += "#nc-root aside input{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:8px!important;color:#fff!important;}";
+    /* Nav links / tab text — dark slate */
+    css += "#nc-root header a,#nc-root header span,#nc-root header button,#nc-root header label{" +
+      "color:#334155!important;}";
+    css += "#nc-root header a:hover{color:#7c3aed!important;}";
+
+    /* Active tab — purple underline */
+    css += "#nc-root header [class*='active'],#nc-root header [aria-selected='true']{" +
+      "color:#7c3aed!important;border-bottom-color:#7c3aed!important;font-weight:700!important;}";
+
+    /* Header SVG icons — dark slate */
+    css += "#nc-root header svg path,#nc-root header svg rect,#nc-root header svg circle,#nc-root header svg polygon{" +
+      "fill:#64748b!important;stroke:none!important;}";
+
+    /* ════════════════════════════════════════════════════════
+       SIDEBAR — deep navy, like the image's dark left panel
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root aside,#nc-root [role='navigation']{" +
+      "background:linear-gradient(180deg,#1e2d4a 0%,#1a2640 100%)!important;" +
+      "border-right:none!important;" +
+      "box-shadow:3px 0 20px rgba(0,0,0,.18)!important;}";
+
+    /* Sidebar all text — muted white */
+    css += "#nc-root aside a,#nc-root aside span,#nc-root aside p,#nc-root aside li,#nc-root aside button{" +
+      "color:rgba(203,213,225,.75)!important;}";
+
+    /* Sidebar hover */
+    css += "#nc-root aside a:hover,#nc-root aside button:hover{" +
+      "color:#fff!important;" +
+      "background:rgba(255,255,255,.08)!important;" +
+      "border-radius:8px!important;}";
+
+    /* Sidebar active item — purple accent */
+    css += "#nc-root aside [class*='active'],#nc-root aside [aria-current]{" +
+      "color:#fff!important;" +
+      "background:rgba(124,58,237,.35)!important;" +
+      "border-radius:8px!important;" +
+      "font-weight:600!important;}";
+
+    /* Sidebar section group headings (MENU, COMPONENTS etc.) */
+    css += "#nc-root aside h2,#nc-root aside h3,#nc-root aside [class*='SectionHeading']{" +
+      "color:rgba(148,163,184,.55)!important;" +
+      "font-size:10px!important;" +
+      "font-weight:700!important;" +
+      "letter-spacing:.14em!important;" +
+      "text-transform:uppercase!important;}";
+
+    /* Sidebar search */
+    css += "#nc-root aside input{" +
+      "background:rgba(255,255,255,.07)!important;" +
+      "border:1px solid rgba(255,255,255,.1)!important;" +
+      "border-radius:8px!important;color:#fff!important;}";
     css += "#nc-root aside input::placeholder{color:rgba(255,255,255,.3)!important;}";
-    css += "#nc-root aside svg path{fill:rgba(255,255,255,.4)!important;}";
+    css += "#nc-root aside svg path,#nc-root aside svg rect{fill:rgba(203,213,225,.45)!important;}";
 
-    /* ════ MAIN AREA ════════════════════════════════════════════ */
-    css += "#nc-root main,#nc-root [role='main']{background:#f0f4f8!important;}";
+    /* ════════════════════════════════════════════════════════
+       MAIN CONTENT — light gray background
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root main,#nc-root [role='main'],body{background:#f4f6f9!important;}";
 
-    /* Entry list rows */
-    css += "#nc-root [class*='ListItem'],#nc-root [class*='EntryCard']{background:#fff!important;border:1px solid rgba(226,232,240,.9)!important;border-radius:12px!important;box-shadow:0 1px 4px rgba(0,0,0,.05)!important;transition:box-shadow .2s,transform .2s,border-color .2s!important;}";
-    css += "#nc-root [class*='ListItem']:hover,#nc-root [class*='EntryCard']:hover{box-shadow:0 6px 20px rgba(0,0,0,.1),0 0 0 2px rgba(124,58,237,.15)!important;border-color:rgba(124,58,237,.3)!important;transform:translateY(-2px)!important;}";
+    /* Page/collection title */
+    css += "#nc-root h1,#nc-root h2{color:#1e293b!important;font-weight:700!important;letter-spacing:-.02em!important;}";
 
-    /* View-toggle icon buttons (grid / list) */
-    css += "#nc-root [class*='ViewControl'] button,#nc-root [class*='viewControl'] button{background:rgba(255,255,255,.75)!important;border:1px solid rgba(226,232,240,.8)!important;border-radius:7px!important;color:#64748b!important;box-shadow:none!important;}";
-    css += "#nc-root [class*='ViewControl'] button[class*='active'],#nc-root [class*='ViewControl'] button[aria-pressed='true']{background:#7c3aed!important;border-color:#7c3aed!important;color:#fff!important;}";
+    /* ── Entry list cards ── */
+    css += "#nc-root [class*='ListItem'],#nc-root [class*='EntryCard']{" +
+      "background:#ffffff!important;" +
+      "border:1px solid #e8ecf0!important;" +
+      "border-radius:12px!important;" +
+      "box-shadow:0 1px 4px rgba(30,45,74,.06),0 1px 2px rgba(0,0,0,.04)!important;" +
+      "transition:box-shadow .2s,transform .18s,border-color .2s!important;}";
+    css += "#nc-root [class*='ListItem']:hover,#nc-root [class*='EntryCard']:hover{" +
+      "box-shadow:0 8px 24px rgba(30,45,74,.12),0 0 0 2px rgba(124,58,237,.18)!important;" +
+      "border-color:rgba(124,58,237,.35)!important;" +
+      "transform:translateY(-2px)!important;}";
 
-    /* Editor panes */
-    css += "#nc-root [class*='ControlPane'],#nc-root [class*='EditorContainer']{background:#fff!important;border-radius:14px!important;border:1px solid rgba(226,232,240,.9)!important;box-shadow:0 2px 8px rgba(0,0,0,.04)!important;}";
+    /* ── View toggle (grid / list icons) ── */
+    css += "#nc-root [class*='ViewControl'] button,#nc-root [class*='viewControl'] button{" +
+      "background:#fff!important;" +
+      "border:1px solid #dde3ea!important;" +
+      "border-radius:7px!important;" +
+      "color:#64748b!important;" +
+      "box-shadow:0 1px 3px rgba(0,0,0,.06)!important;}";
+    css += "#nc-root [class*='ViewControl'] button[class*='active'],#nc-root [class*='ViewControl'] button[aria-pressed='true']{" +
+      "background:#7c3aed!important;border-color:#7c3aed!important;color:#fff!important;}";
 
-    /* Form labels */
-    css += "#nc-root label{font-size:11px!important;font-weight:700!important;letter-spacing:.07em!important;text-transform:uppercase!important;color:#64748b!important;}";
+    /* ── Editor / form panes ── */
+    css += "#nc-root [class*='ControlPane'],#nc-root [class*='EditorContainer']{" +
+      "background:#fff!important;" +
+      "border-radius:14px!important;" +
+      "border:1px solid #e8ecf0!important;" +
+      "box-shadow:0 2px 10px rgba(30,45,74,.07)!important;}";
 
-    /* Hint text */
-    css += "#nc-root [class*='Hint'],[class*='FieldHint']{font-size:12px!important;color:#94a3b8!important;}";
+    /* ── Field labels ── */
+    css += "#nc-root label{" +
+      "font-size:11px!important;" +
+      "font-weight:700!important;" +
+      "letter-spacing:.09em!important;" +
+      "text-transform:uppercase!important;" +
+      "color:#64748b!important;}";
 
-    /* ════ INPUTS ════════════════════════════════════════════════ */
-    css += "#nc-root input[type='text'],#nc-root input[type='email'],#nc-root input[type='url'],#nc-root input[type='number'],#nc-root input[type='date'],#nc-root textarea,#nc-root select{background:#f8fafc!important;border:1.5px solid #e2e8f0!important;border-radius:10px!important;color:#0f172a!important;transition:border-color .15s,box-shadow .15s!important;}";
-    css += "#nc-root input:focus,#nc-root textarea:focus,#nc-root select:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.12)!important;outline:none!important;background:#fff!important;}";
+    /* ── Hint / helper text ── */
+    css += "#nc-root [class*='Hint'],#nc-root [class*='FieldHint']{" +
+      "font-size:12px!important;color:#94a3b8!important;line-height:1.55!important;}";
+
+    /* ════════════════════════════════════════════════════════
+       INPUTS
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root input[type='text'],#nc-root input[type='email']," +
+      "#nc-root input[type='url'],#nc-root input[type='number']," +
+      "#nc-root input[type='date'],#nc-root textarea,#nc-root select{" +
+      "background:#f8fafc!important;" +
+      "border:1.5px solid #dde3ea!important;" +
+      "border-radius:9px!important;" +
+      "color:#0f172a!important;" +
+      "transition:border-color .15s,box-shadow .15s!important;}";
+    css += "#nc-root input:focus,#nc-root textarea:focus,#nc-root select:focus{" +
+      "border-color:#7c3aed!important;" +
+      "box-shadow:0 0 0 3px rgba(124,58,237,.11)!important;" +
+      "outline:none!important;background:#fff!important;}";
     css += "#nc-root input::placeholder,#nc-root textarea::placeholder{color:#94a3b8!important;}";
 
-    /* ════ BUTTONS — colour + shape ONLY, no padding or font-size ═ */
-    /* Prevents text from bursting out of the button container.      */
-    css += "#nc-root button{border-radius:8px!important;font-weight:600!important;white-space:nowrap!important;cursor:pointer!important;transition:background .15s,box-shadow .15s,transform .15s!important;}";
-    css += "#nc-root button:disabled,#nc-root button[disabled]{opacity:0.4!important;cursor:not-allowed!important;pointer-events:none!important;transform:none!important;box-shadow:none!important;}";
+    /* ════════════════════════════════════════════════════════
+       BUTTONS — colour/shape only, never padding or font-size
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root button{" +
+      "border-radius:8px!important;" +
+      "font-weight:600!important;" +
+      "white-space:nowrap!important;" +
+      "cursor:pointer!important;" +
+      "transition:background .15s,box-shadow .15s,transform .15s!important;}";
 
-    /* Save (purple) */
-    css += "#nc-root [class*='SaveButton'],#nc-root [class*='saveButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 2px 10px rgba(124,58,237,.35)!important;}";
-    css += "#nc-root [class*='SaveButton']:hover:not(:disabled),#nc-root [class*='saveButton']:hover:not(:disabled){box-shadow:0 4px 18px rgba(124,58,237,.5)!important;transform:translateY(-1px)!important;}";
+    css += "#nc-root button:disabled,#nc-root button[disabled]{" +
+      "opacity:0.38!important;cursor:not-allowed!important;" +
+      "pointer-events:none!important;transform:none!important;box-shadow:none!important;}";
 
-    /* Publish (green) */
-    css += "#nc-root [class*='PublishButton'],#nc-root [class*='publishButton']{background:linear-gradient(135deg,#059669,#10b981)!important;color:#fff!important;border:none!important;box-shadow:0 2px 10px rgba(5,150,105,.35)!important;}";
-    css += "#nc-root [class*='PublishButton']:hover:not(:disabled),#nc-root [class*='publishButton']:hover:not(:disabled){box-shadow:0 4px 18px rgba(5,150,105,.5)!important;transform:translateY(-1px)!important;}";
+    /* Save — purple */
+    css += "#nc-root [class*='SaveButton'],#nc-root [class*='saveButton']{" +
+      "background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;" +
+      "color:#fff!important;border:none!important;" +
+      "box-shadow:0 2px 10px rgba(124,58,237,.32)!important;}";
+    css += "#nc-root [class*='SaveButton']:hover:not(:disabled){" +
+      "box-shadow:0 4px 18px rgba(124,58,237,.48)!important;transform:translateY(-1px)!important;}";
 
-    /* New-entry / create (purple) */
-    css += "#nc-root [class*='CreateButton'],#nc-root [class*='createButton'],#nc-root [class*='NewButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 3px 14px rgba(124,58,237,.38)!important;}";
+    /* Publish — green */
+    css += "#nc-root [class*='PublishButton'],#nc-root [class*='publishButton']{" +
+      "background:linear-gradient(135deg,#059669,#10b981)!important;" +
+      "color:#fff!important;border:none!important;" +
+      "box-shadow:0 2px 10px rgba(5,150,105,.32)!important;}";
+    css += "#nc-root [class*='PublishButton']:hover:not(:disabled){" +
+      "box-shadow:0 4px 18px rgba(5,150,105,.48)!important;transform:translateY(-1px)!important;}";
 
-    /* ════ MARKDOWN TOOLBAR ══════════════════════════════════════ */
-    css += "#nc-root [class*='EditorToolbar']{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important;border-radius:12px 12px 0 0!important;}";
-    css += "#nc-root [class*='EditorToolbar'] button{background:transparent!important;border:none!important;box-shadow:none!important;color:#64748b!important;border-radius:6px!important;}";
-    css += "#nc-root [class*='EditorToolbar'] button:hover{background:#e2e8f0!important;color:#1e293b!important;}";
-    css += "#nc-root [class*='EditorToolbar'] button[class*='active']{background:rgba(124,58,237,.1)!important;color:#7c3aed!important;}";
+    /* Create / New — purple */
+    css += "#nc-root [class*='CreateButton'],#nc-root [class*='createButton'],#nc-root [class*='NewButton']{" +
+      "background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;" +
+      "color:#fff!important;border:none!important;" +
+      "box-shadow:0 3px 14px rgba(124,58,237,.36)!important;}";
 
-    /* ════ EDITORIAL WORKFLOW BOARD ══════════════════════════════ */
-    css += "#nc-root [class*='WorkflowCard'],#nc-root [class*='DraggableCard']{background:#fff!important;border-radius:12px!important;border:1px solid rgba(226,232,240,.9)!important;box-shadow:0 2px 8px rgba(0,0,0,.05)!important;}";
-    css += "#nc-root [class*='WorkflowCard']:hover{box-shadow:0 6px 20px rgba(0,0,0,.1)!important;transform:translateY(-2px)!important;}";
-    /* Status colour pills */
-    css += "#nc-root [class*='status-draft']{background:rgba(100,116,139,.1)!important;color:#64748b!important;}";
-    css += "#nc-root [class*='status-pending']{background:rgba(245,158,11,.1)!important;color:#d97706!important;}";
-    css += "#nc-root [class*='status-ready']{background:rgba(16,185,129,.1)!important;color:#059669!important;}";
-    /* Publish-all button at top of workflow page */
-    css += "#nc-root [class*='publishAll'],#nc-root [class*='PublishAll']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 3px 14px rgba(124,58,237,.4)!important;}";
+    /* Secondary / cancel */
+    css += "#nc-root button[class*='secondary'],#nc-root button[class*='cancel'],#nc-root button[class*='Cancel']{" +
+      "background:#fff!important;color:#475569!important;" +
+      "border:1.5px solid #dde3ea!important;box-shadow:0 1px 3px rgba(0,0,0,.06)!important;}";
 
-    /* ════ MEDIA, MODAL, TOAST, DROPDOWN ════════════════════════ */
-    css += "#nc-root [class*='Dropzone'],#nc-root [class*='dropzone']{border:2px dashed rgba(124,58,237,.35)!important;border-radius:14px!important;background:rgba(124,58,237,.03)!important;}";
-    css += "#nc-root [class*='Dropzone']:hover{border-color:#7c3aed!important;background:rgba(124,58,237,.07)!important;}";
-    css += "#nc-root [class*='Modal'],#nc-root [role='dialog']{border-radius:20px!important;box-shadow:0 28px 80px rgba(0,0,0,.3)!important;}";
-    css += "#nc-root [class*='Overlay'],#nc-root [class*='Backdrop']{background:rgba(4,0,26,.7)!important;backdrop-filter:blur(8px)!important;}";
-    css += "#nc-root [role='menu'],#nc-root [class*='Dropdown']{background:#1e293b!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:12px!important;box-shadow:0 20px 60px rgba(0,0,0,.4)!important;padding:6px!important;}";
-    css += "#nc-root [role='menuitem']{color:rgba(255,255,255,.75)!important;border-radius:8px!important;}";
-    css += "#nc-root [role='menuitem']:hover{background:rgba(139,92,246,.2)!important;color:#fff!important;}";
-    css += "#nc-root [class*='Toast'],#nc-root [class*='Notification']{border-radius:14px!important;font-size:13px!important;font-weight:500!important;box-shadow:0 12px 40px rgba(0,0,0,.22)!important;}";
+    /* Danger */
+    css += "#nc-root button[class*='danger'],#nc-root button[class*='delete']{" +
+      "background:#fff!important;color:#dc2626!important;border:1.5px solid #fca5a5!important;}";
+
+    /* ════════════════════════════════════════════════════════
+       MARKDOWN EDITOR TOOLBAR
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root [class*='EditorToolbar']{" +
+      "background:#f8fafc!important;" +
+      "border-bottom:1px solid #e8ecf0!important;" +
+      "border-radius:12px 12px 0 0!important;}";
+    css += "#nc-root [class*='EditorToolbar'] button{" +
+      "background:transparent!important;border:none!important;" +
+      "box-shadow:none!important;color:#64748b!important;border-radius:6px!important;}";
+    css += "#nc-root [class*='EditorToolbar'] button:hover{background:#e8ecf0!important;color:#1e293b!important;}";
+    css += "#nc-root [class*='EditorToolbar'] button[class*='active']{" +
+      "background:rgba(124,58,237,.1)!important;color:#7c3aed!important;}";
+
+    /* ════════════════════════════════════════════════════════
+       WORKFLOW BOARD
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root [class*='WorkflowCard'],#nc-root [class*='DraggableCard']{" +
+      "background:#fff!important;border-radius:12px!important;" +
+      "border:1px solid #e8ecf0!important;" +
+      "box-shadow:0 2px 8px rgba(30,45,74,.07)!important;}";
+    css += "#nc-root [class*='WorkflowCard']:hover{" +
+      "box-shadow:0 6px 20px rgba(30,45,74,.12)!important;transform:translateY(-2px)!important;}";
+    css += "#nc-root [class*='status-draft']{background:rgba(100,116,139,.09)!important;color:#64748b!important;}";
+    css += "#nc-root [class*='status-pending']{background:rgba(245,158,11,.09)!important;color:#d97706!important;}";
+    css += "#nc-root [class*='status-ready']{background:rgba(16,185,129,.09)!important;color:#059669!important;}";
+
+    /* ════════════════════════════════════════════════════════
+       MEDIA, MODALS, TOASTS, DROPDOWNS
+    ════════════════════════════════════════════════════════ */
+    css += "#nc-root [class*='Dropzone'],#nc-root [class*='dropzone']{" +
+      "border:2px dashed rgba(124,58,237,.3)!important;" +
+      "border-radius:14px!important;background:rgba(124,58,237,.02)!important;}";
+    css += "#nc-root [class*='Dropzone']:hover{" +
+      "border-color:#7c3aed!important;background:rgba(124,58,237,.06)!important;}";
+
+    css += "#nc-root [class*='Modal'],#nc-root [role='dialog']{" +
+      "background:#fff!important;" +
+      "border-radius:18px!important;" +
+      "box-shadow:0 24px 80px rgba(30,45,74,.22)!important;" +
+      "border:1px solid #e8ecf0!important;}";
+    css += "#nc-root [class*='Overlay'],#nc-root [class*='Backdrop']{" +
+      "background:rgba(15,23,42,.55)!important;backdrop-filter:blur(6px)!important;}";
+
+    /* Dropdown — white (matches image's clean dropdowns) */
+    css += "#nc-root [role='menu'],#nc-root [class*='Dropdown']{" +
+      "background:#fff!important;" +
+      "border:1px solid #e8ecf0!important;" +
+      "border-radius:12px!important;" +
+      "box-shadow:0 16px 48px rgba(30,45,74,.16)!important;" +
+      "padding:6px!important;}";
+    css += "#nc-root [role='menuitem']{color:#334155!important;border-radius:8px!important;font-size:13px!important;}";
+    css += "#nc-root [role='menuitem']:hover{background:#f4f6f9!important;color:#7c3aed!important;}";
+
+    /* Toast notifications */
+    css += "#nc-root [class*='Toast'],#nc-root [class*='Notification']{" +
+      "background:#fff!important;" +
+      "border:1px solid #e8ecf0!important;" +
+      "border-radius:12px!important;" +
+      "color:#1e293b!important;" +
+      "font-size:13px!important;font-weight:500!important;" +
+      "box-shadow:0 10px 36px rgba(30,45,74,.14)!important;}";
+
+    /* Badge / tag pills */
+    css += "#nc-root [class*='Badge'],#nc-root [class*='Tag'],#nc-root [class*='badge']{" +
+      "background:rgba(124,58,237,.08)!important;" +
+      "color:#7c3aed!important;" +
+      "border-radius:6px!important;" +
+      "font-size:11px!important;font-weight:700!important;}";
 
     var s = document.createElement("style");
     s.id = "dm-cms-override";
