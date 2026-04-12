@@ -1138,10 +1138,34 @@
       "border-radius:6px!important;" +
       "font-size:11px!important;font-weight:700!important;}";
 
-    var s = document.createElement("style");
-    s.id = "dm-cms-override";
-    s.textContent = css;
-    document.head.appendChild(s);
+    /* Inject our style tag and keep it LAST in <head>.
+       Decap CMS continuously appends new <style> tags as it renders
+       components (emotion/styled-components). Each new tag buries ours,
+       so we watch <head> and move ours back to the end immediately. */
+    function applyStyles() {
+      var old = document.getElementById("dm-cms-override");
+      if (old) old.remove();
+      var s = document.createElement("style");
+      s.id = "dm-cms-override";
+      s.textContent = css;
+      document.head.appendChild(s);
+    }
+
+    applyStyles();
+
+    /* Watch for CMS style injections and re-insert ours after them */
+    var headObs = new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var added = mutations[i].addedNodes;
+        for (var j = 0; j < added.length; j++) {
+          if (added[j].nodeName === "STYLE" && added[j].id !== "dm-cms-override") {
+            setTimeout(applyStyles, 0);
+            return;
+          }
+        }
+      }
+    });
+    headObs.observe(document.head, { childList: true });
   }
 
   /* ════════════════════════════════════════════════════════════
