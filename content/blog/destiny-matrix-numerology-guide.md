@@ -1,5 +1,5 @@
 ---
-title: "Destiny Matrix Numerology Guide: Read Your Chart Step by Step"
+title: "Destiny Matrix Numerology Guide: Read Your Chart Step by Step."
 description: Master destiny matrix numerology with a practical step-by-step
   guide to reading chart positions, purpose lines, and real-life action
   patterns.
