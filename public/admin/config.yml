@@ -1,6 +1,13 @@
 backend:
   name: git-gateway
   branch: main
+  commit_messages:
+    create:      'cms: create {{collection}} "{{slug}}" [skip ci]'
+    update:      'cms: update {{collection}} "{{slug}}" [skip ci]'
+    delete:      'cms: delete {{collection}} "{{slug}}" [skip ci]'
+    uploadMedia: 'cms: upload "{{path}}" [skip ci]'
+    deleteMedia: 'cms: delete "{{path}}" [skip ci]'
+    openAuthoring: 'cms: {{message}} [skip ci]'
 
 # Uploaded images go here
 media_folder: "public/blog/images"
