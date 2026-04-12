@@ -1,6 +1,11 @@
 [build]
   command = "npm run build"
   publish = ".next"
+  # Skip build unless .deploy-trigger changed.
+  # CMS saves never touch .deploy-trigger → auto-deploys are skipped.
+  # The dashboard "Deploy Now" button updates .deploy-trigger via
+  # GitHub API → that commit triggers a real production build.
+  ignore = "git diff --quiet HEAD^ HEAD -- .deploy-trigger"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
