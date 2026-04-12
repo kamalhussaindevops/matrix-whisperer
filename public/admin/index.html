@@ -1121,7 +1121,10 @@
       );
     })
     .then(function(r) {
-      if (!r.ok) throw new Error("GitHub API " + r.status);
+      if (r.status === 401) throw new Error("401: Token is invalid or expired. Please revoke it on GitHub and create a new one.");
+      if (r.status === 403) throw new Error("403: Token doesn't have 'Contents: Read and write' permission for this repo.");
+      if (r.status === 404) throw new Error("404: Repo not found. Check the token has access to the matrix-whisperer repo.");
+      if (!r.ok) throw new Error("GitHub API error " + r.status + ". Check browser console for details.");
       if (btn) {
         btn.classList.add("success");
         btn.innerHTML = "✓ Deploy triggered";
@@ -1134,16 +1137,13 @@
     })
     .catch(function(err) {
       console.error("Deploy error:", err);
-      /* Bad / expired token — clear it so user can re-enter */
       localStorage.removeItem("dm_gh_token");
+      /* Show the real error message so user knows what to fix */
+      alert("Deploy failed:\n\n" + err.message + "\n\nYour token has been cleared. Click Deploy Now to enter a new one.");
       if (btn) {
-        btn.classList.add("error");
-        btn.innerHTML = "⚠ Token error — click to retry";
-        setTimeout(function() {
-          btn.disabled = false;
-          btn.classList.remove("error");
-          btn.innerHTML = DEPLOY_ICON + " Deploy Now";
-        }, 4000);
+        btn.disabled = false;
+        btn.classList.remove("error");
+        btn.innerHTML = DEPLOY_ICON + " Deploy Now";
       }
     });
   }
