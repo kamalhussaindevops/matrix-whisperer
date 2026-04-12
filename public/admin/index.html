@@ -212,6 +212,22 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 10px; font-weight: 800; color: #fff;
     }
+    .db-deploy-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 16px; border-radius: 9px;
+      font-size: 12px; font-weight: 700; font-family: inherit;
+      color: #fff;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border: none;
+      box-shadow: 0 2px 12px rgba(5,150,105,.4);
+      cursor: pointer;
+      transition: all .18s;
+      white-space: nowrap;
+    }
+    .db-deploy-btn:hover { box-shadow: 0 4px 20px rgba(5,150,105,.55); transform: translateY(-1px); }
+    .db-deploy-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .db-deploy-btn.success { background: linear-gradient(135deg, #047857, #059669); }
+    .db-deploy-btn.error   { background: linear-gradient(135deg, #b91c1c, #dc2626); }
 
     /* Main container */
     .db-main {
@@ -471,6 +487,10 @@
           <div class="db-live-dot"></div>
           View Live Site ↗
         </a>
+        <button id="deploy-btn" class="db-deploy-btn" onclick="deployNow(this)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          Deploy Now
+        </button>
         <div class="db-user">
           <div class="db-user-av" id="user-av">A</div>
           <span id="user-email">Admin</span>
@@ -852,183 +872,110 @@
   }
 
   /* ════════════════════════════════════════════════════════════
-     INJECT PREMIUM CSS INTO DECAP CMS
-     Scoped to #nc-root. Uses semantic + attribute selectors so
-     it works even though CMS uses CSS-in-JS generated class names.
+     INJECT LEAN CSS INTO DECAP CMS
+     Rules: colour/border/border-radius/shadow ONLY on buttons.
+     Never override padding or font-size on buttons — that causes
+     text to overflow the button container.
   ════════════════════════════════════════════════════════════ */
   var _stylesInjected = false;
   function injectCMSStyles() {
     if (_stylesInjected) return;
     _stylesInjected = true;
 
-    /* Every rule is written as ONE complete string so the #nc-root
-       scope is never accidentally dropped after a comma. */
     var css = "";
 
-    /* ── Font & smoothing ── */
-    css += "#nc-root,#nc-root *{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif!important;-webkit-font-smoothing:antialiased!important;}";
+    /* ── Safety: box-sizing on everything ── */
+    css += "#nc-root *{box-sizing:border-box!important;}";
 
-    /* ── Page canvas ── */
-    css += "body,#nc-root{background:#f0f4f8!important;}";
+    /* ── Font ── */
+    css += "#nc-root{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif!important;-webkit-font-smoothing:antialiased!important;}";
 
     /* ── Thin purple scrollbar ── */
     css += "#nc-root ::-webkit-scrollbar{width:5px;height:5px;}";
-    css += "#nc-root ::-webkit-scrollbar-track{background:transparent;}";
-    css += "#nc-root ::-webkit-scrollbar-thumb{background:rgba(124,58,237,.3);border-radius:3px;}";
+    css += "#nc-root ::-webkit-scrollbar-thumb{background:rgba(124,58,237,.35);border-radius:3px;}";
 
-    /* ════ TOP NAVIGATION BAR (dark navy) ════════════════════════ */
-    /* Target the outermost header element only — do NOT cascade colour
-       to all its children; that breaks the tab pills and icon buttons. */
-    css += "#nc-root header{background:#0d1117!important;border-bottom:1px solid rgba(255,255,255,.07)!important;box-shadow:0 2px 20px rgba(0,0,0,.45)!important;}";
-
-    /* Top-bar links / tab labels — white text */
+    /* ════ HEADER (dark navy) ════════════════════════════════════ */
+    css += "#nc-root header{background:#0d1117!important;border-bottom:1px solid rgba(255,255,255,.07)!important;box-shadow:0 2px 16px rgba(0,0,0,.4)!important;}";
     css += "#nc-root header a,#nc-root header span,#nc-root header label{color:rgba(255,255,255,.8)!important;}";
     css += "#nc-root header a:hover{color:#a78bfa!important;}";
-
-    /* Top-bar SVG icons */
-    css += "#nc-root header svg path,#nc-root header svg rect,#nc-root header svg circle,#nc-root header svg polygon{fill:rgba(255,255,255,.6)!important;stroke:none!important;}";
-
-    /* Active tab highlight in top nav */
+    css += "#nc-root header svg path,#nc-root header svg rect,#nc-root header svg circle{fill:rgba(255,255,255,.55)!important;stroke:none!important;}";
     css += "#nc-root header [class*='active'],#nc-root header [aria-selected='true']{color:#a78bfa!important;border-color:#7c3aed!important;}";
 
-    /* ════ LEFT SIDEBAR (dark slate) ════════════════════════════ */
-    css += "#nc-root aside,#nc-root [role='navigation']{background:#111827!important;border-right:1px solid rgba(255,255,255,.06)!important;box-shadow:2px 0 16px rgba(0,0,0,.25)!important;}";
-
-    /* Sidebar text */
+    /* ════ SIDEBAR (dark slate) ══════════════════════════════════ */
+    css += "#nc-root aside,#nc-root [role='navigation']{background:#111827!important;border-right:1px solid rgba(255,255,255,.06)!important;}";
     css += "#nc-root aside a,#nc-root aside span,#nc-root aside p,#nc-root aside li,#nc-root aside button{color:rgba(255,255,255,.6)!important;}";
-    css += "#nc-root aside a:hover,#nc-root aside button:hover{color:rgba(255,255,255,.95)!important;background:rgba(139,92,246,.14)!important;border-radius:8px!important;}";
+    css += "#nc-root aside a:hover,#nc-root aside button:hover{color:#fff!important;background:rgba(139,92,246,.15)!important;border-radius:8px!important;}";
     css += "#nc-root aside [class*='active'],#nc-root aside [aria-current]{color:#c4b5fd!important;background:rgba(139,92,246,.18)!important;border-radius:8px!important;}";
-
-    /* Sidebar search input */
-    css += "#nc-root aside input[type='search'],#nc-root aside input[type='text']{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:8px!important;color:#fff!important;padding:8px 12px!important;}";
+    css += "#nc-root aside input{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:8px!important;color:#fff!important;}";
     css += "#nc-root aside input::placeholder{color:rgba(255,255,255,.3)!important;}";
-    css += "#nc-root aside svg path,#nc-root aside svg rect,#nc-root aside svg circle{fill:rgba(255,255,255,.4)!important;}";
+    css += "#nc-root aside svg path{fill:rgba(255,255,255,.4)!important;}";
 
-    /* ════ MAIN CONTENT AREA ═════════════════════════════════════ */
+    /* ════ MAIN AREA ════════════════════════════════════════════ */
     css += "#nc-root main,#nc-root [role='main']{background:#f0f4f8!important;}";
 
-    /* ── Collection list: entry rows ── */
-    css += "#nc-root [class*='ListItem'],#nc-root [class*='listItem'],#nc-root [class*='EntryCard'],#nc-root [class*='entryCard']{background:#fff!important;border:1px solid rgba(226,232,240,.9)!important;border-radius:14px!important;box-shadow:0 1px 4px rgba(0,0,0,.05)!important;transition:box-shadow .2s,transform .2s,border-color .2s!important;}";
-    css += "#nc-root [class*='ListItem']:hover,#nc-root [class*='entryCard']:hover,#nc-root [class*='EntryCard']:hover{box-shadow:0 6px 24px rgba(0,0,0,.1),0 0 0 2px rgba(124,58,237,.15)!important;border-color:rgba(124,58,237,.3)!important;transform:translateY(-2px)!important;}";
+    /* Entry list rows */
+    css += "#nc-root [class*='ListItem'],#nc-root [class*='EntryCard']{background:#fff!important;border:1px solid rgba(226,232,240,.9)!important;border-radius:12px!important;box-shadow:0 1px 4px rgba(0,0,0,.05)!important;transition:box-shadow .2s,transform .2s,border-color .2s!important;}";
+    css += "#nc-root [class*='ListItem']:hover,#nc-root [class*='EntryCard']:hover{box-shadow:0 6px 20px rgba(0,0,0,.1),0 0 0 2px rgba(124,58,237,.15)!important;border-color:rgba(124,58,237,.3)!important;transform:translateY(-2px)!important;}";
 
-    /* Collection list view-toggle icon buttons (the small grid/list icons) */
-    css += "#nc-root [class*='ViewControl'] button,#nc-root [class*='viewControl'] button,#nc-root [class*='ListControl'] button{background:rgba(255,255,255,.7)!important;border:1px solid rgba(226,232,240,.8)!important;border-radius:7px!important;color:#64748b!important;padding:6px 8px!important;box-shadow:none!important;}";
-    css += "#nc-root [class*='ViewControl'] button:hover,#nc-root [class*='viewControl'] button:hover{background:#fff!important;border-color:#c4b5fd!important;color:#7c3aed!important;}";
+    /* View-toggle icon buttons (grid / list) */
+    css += "#nc-root [class*='ViewControl'] button,#nc-root [class*='viewControl'] button{background:rgba(255,255,255,.75)!important;border:1px solid rgba(226,232,240,.8)!important;border-radius:7px!important;color:#64748b!important;box-shadow:none!important;}";
     css += "#nc-root [class*='ViewControl'] button[class*='active'],#nc-root [class*='ViewControl'] button[aria-pressed='true']{background:#7c3aed!important;border-color:#7c3aed!important;color:#fff!important;}";
-    css += "#nc-root [class*='ViewControl'] svg path,#nc-root [class*='ViewControl'] svg rect{fill:currentColor!important;}";
 
-    /* ── Editor panes ── */
-    css += "#nc-root [class*='ControlPane'],#nc-root [class*='controlPane'],#nc-root [class*='EditorContainer']{background:#fff!important;border-radius:16px!important;border:1px solid rgba(226,232,240,.9)!important;box-shadow:0 2px 8px rgba(0,0,0,.05)!important;}";
+    /* Editor panes */
+    css += "#nc-root [class*='ControlPane'],#nc-root [class*='EditorContainer']{background:#fff!important;border-radius:14px!important;border:1px solid rgba(226,232,240,.9)!important;box-shadow:0 2px 8px rgba(0,0,0,.04)!important;}";
 
-    /* ── Form labels ── */
-    css += "#nc-root label{font-size:11px!important;font-weight:700!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#64748b!important;margin-bottom:6px!important;}";
+    /* Form labels */
+    css += "#nc-root label{font-size:11px!important;font-weight:700!important;letter-spacing:.07em!important;text-transform:uppercase!important;color:#64748b!important;}";
 
-    /* ── Hint / description ── */
-    css += "#nc-root [class*='Hint'],#nc-root [class*='hint'],#nc-root [class*='FieldHint']{font-size:12px!important;color:#94a3b8!important;line-height:1.5!important;}";
+    /* Hint text */
+    css += "#nc-root [class*='Hint'],[class*='FieldHint']{font-size:12px!important;color:#94a3b8!important;}";
 
-    /* ── All text inputs ── */
-    css += "#nc-root input[type='text'],#nc-root input[type='email'],#nc-root input[type='url'],#nc-root input[type='number'],#nc-root input[type='date'],#nc-root input[type='datetime-local'],#nc-root textarea,#nc-root select{background:#f8fafc!important;border:1.5px solid #e2e8f0!important;border-radius:10px!important;color:#0f172a!important;font-size:14px!important;padding:10px 14px!important;line-height:1.5!important;transition:border-color .15s,box-shadow .15s!important;}";
-    css += "#nc-root input:focus,#nc-root textarea:focus,#nc-root select:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.13)!important;outline:none!important;background:#fff!important;}";
+    /* ════ INPUTS ════════════════════════════════════════════════ */
+    css += "#nc-root input[type='text'],#nc-root input[type='email'],#nc-root input[type='url'],#nc-root input[type='number'],#nc-root input[type='date'],#nc-root textarea,#nc-root select{background:#f8fafc!important;border:1.5px solid #e2e8f0!important;border-radius:10px!important;color:#0f172a!important;transition:border-color .15s,box-shadow .15s!important;}";
+    css += "#nc-root input:focus,#nc-root textarea:focus,#nc-root select:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.12)!important;outline:none!important;background:#fff!important;}";
     css += "#nc-root input::placeholder,#nc-root textarea::placeholder{color:#94a3b8!important;}";
-    css += "#nc-root select{appearance:none!important;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;padding-right:36px!important;}";
 
-    /* ════ BUTTONS ═══════════════════════════════════════════════ */
-    /* Base shape — applied to all buttons */
-    css += "#nc-root button{border-radius:9px!important;font-weight:600!important;font-size:13px!important;transition:background .16s ease,box-shadow .16s ease,transform .16s ease,border-color .16s ease!important;cursor:pointer!important;}";
+    /* ════ BUTTONS — colour + shape ONLY, no padding or font-size ═ */
+    /* Prevents text from bursting out of the button container.      */
+    css += "#nc-root button{border-radius:8px!important;font-weight:600!important;white-space:nowrap!important;cursor:pointer!important;transition:background .15s,box-shadow .15s,transform .15s!important;}";
+    css += "#nc-root button:disabled,#nc-root button[disabled]{opacity:0.4!important;cursor:not-allowed!important;pointer-events:none!important;transform:none!important;box-shadow:none!important;}";
 
-    /* Disabled state — must override BEFORE any active color rules */
-    css += "#nc-root button:disabled,#nc-root button[disabled]{opacity:0.42!important;cursor:not-allowed!important;transform:none!important;box-shadow:none!important;pointer-events:none!important;}";
+    /* Save (purple) */
+    css += "#nc-root [class*='SaveButton'],#nc-root [class*='saveButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 2px 10px rgba(124,58,237,.35)!important;}";
+    css += "#nc-root [class*='SaveButton']:hover:not(:disabled),#nc-root [class*='saveButton']:hover:not(:disabled){box-shadow:0 4px 18px rgba(124,58,237,.5)!important;transform:translateY(-1px)!important;}";
 
-    /* ── Save button (purple gradient) ── */
-    /* Targets the editor Save action; uses role/class combos that are stable in Decap v3 */
-    css += "#nc-root [class*='SaveButton'],#nc-root [class*='saveButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 3px 12px rgba(124,58,237,.38)!important;padding:9px 22px!important;}";
-    css += "#nc-root [class*='SaveButton']:hover:not(:disabled),#nc-root [class*='saveButton']:hover:not(:disabled){background:linear-gradient(135deg,#6d28d9,#5b21b6)!important;box-shadow:0 5px 20px rgba(124,58,237,.5)!important;transform:translateY(-1px)!important;}";
+    /* Publish (green) */
+    css += "#nc-root [class*='PublishButton'],#nc-root [class*='publishButton']{background:linear-gradient(135deg,#059669,#10b981)!important;color:#fff!important;border:none!important;box-shadow:0 2px 10px rgba(5,150,105,.35)!important;}";
+    css += "#nc-root [class*='PublishButton']:hover:not(:disabled),#nc-root [class*='publishButton']:hover:not(:disabled){box-shadow:0 4px 18px rgba(5,150,105,.5)!important;transform:translateY(-1px)!important;}";
 
-    /* ── Publish / go-live button (green) ── */
-    css += "#nc-root [class*='PublishButton'],#nc-root [class*='publishButton']{background:linear-gradient(135deg,#059669,#10b981)!important;color:#fff!important;border:none!important;box-shadow:0 3px 12px rgba(5,150,105,.38)!important;padding:9px 22px!important;}";
-    css += "#nc-root [class*='PublishButton']:hover:not(:disabled),#nc-root [class*='publishButton']:hover:not(:disabled){background:linear-gradient(135deg,#047857,#059669)!important;box-shadow:0 5px 20px rgba(5,150,105,.5)!important;transform:translateY(-1px)!important;}";
+    /* New-entry / create (purple) */
+    css += "#nc-root [class*='CreateButton'],#nc-root [class*='createButton'],#nc-root [class*='NewButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 3px 14px rgba(124,58,237,.38)!important;}";
 
-    /* ── Secondary / cancel buttons ── */
-    css += "#nc-root button[class*='secondary'],#nc-root button[class*='cancel'],#nc-root button[class*='Cancel'],#nc-root button[class*='default']{background:#fff!important;color:#475569!important;border:1.5px solid #e2e8f0!important;box-shadow:0 1px 3px rgba(0,0,0,.06)!important;padding:9px 18px!important;}";
-    css += "#nc-root button[class*='secondary']:hover:not(:disabled){background:#f1f5f9!important;border-color:#cbd5e1!important;}";
-
-    /* ── Danger / delete ── */
-    css += "#nc-root button[class*='danger'],#nc-root button[class*='delete'],#nc-root button[class*='Delete']{background:#fff!important;color:#dc2626!important;border:1.5px solid #fca5a5!important;}";
-    css += "#nc-root button[class*='danger']:hover:not(:disabled){background:#fef2f2!important;border-color:#ef4444!important;}";
-
-    /* ── "New entry" / Create button (purple) ── */
-    css += "#nc-root [class*='CreateButton'],#nc-root [class*='createButton'],#nc-root [class*='NewButton']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border-radius:10px!important;border:none!important;box-shadow:0 4px 16px rgba(124,58,237,.4)!important;}";
-    css += "#nc-root [class*='CreateButton']:hover:not(:disabled){box-shadow:0 6px 22px rgba(124,58,237,.55)!important;transform:translateY(-1px)!important;}";
-
-    /* ════ EDITORIAL WORKFLOW BOARD ═══════════════════════════════ */
-    /* The three-column Kanban view at #/workflow */
-    css += "#nc-root [class*='WorkflowList']{padding:16px!important;}";
-
-    /* Kanban column cards */
-    css += "#nc-root [class*='WorkflowCard'],#nc-root [class*='DraggableCard'],#nc-root [class*='workflowCard']{background:#fff!important;border-radius:12px!important;border:1px solid rgba(226,232,240,.9)!important;box-shadow:0 2px 8px rgba(0,0,0,.05)!important;margin-bottom:10px!important;transition:box-shadow .2s,transform .2s!important;}";
-    css += "#nc-root [class*='WorkflowCard']:hover{box-shadow:0 6px 20px rgba(0,0,0,.1)!important;transform:translateY(-2px)!important;}";
-
-    /* Kanban column header labels */
-    css += "#nc-root [class*='WorkflowList'] h2,#nc-root [class*='workflowList'] h2{font-size:12px!important;font-weight:700!important;letter-spacing:.12em!important;text-transform:uppercase!important;color:#64748b!important;margin-bottom:12px!important;}";
-
-    /* Status dropdown in the entry editor toolbar */
-    css += "#nc-root [class*='StatusDropdown'],#nc-root [class*='statusDropdown'],#nc-root [class*='StatusControl']{border:1.5px solid #e2e8f0!important;border-radius:9px!important;background:#fff!important;color:#475569!important;padding:7px 12px!important;font-weight:600!important;font-size:12px!important;cursor:pointer!important;}";
-    css += "#nc-root [class*='StatusDropdown']:focus,#nc-root [class*='StatusControl']:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.12)!important;outline:none!important;}";
-
-    /* Status badge pills on workflow cards */
-    css += "#nc-root [class*='EntryStatus']{border-radius:6px!important;padding:3px 10px!important;font-size:11px!important;font-weight:700!important;letter-spacing:.04em!important;}";
-
-    /* Per-status colour coding */
-    css += "#nc-root [class*='status-draft' i],#nc-root [class*='Draft' i]{background:rgba(100,116,139,.1)!important;color:#64748b!important;}";
-    css += "#nc-root [class*='status-pending' i],#nc-root [class*='InReview' i],#nc-root [class*='Review' i]{background:rgba(245,158,11,.1)!important;color:#d97706!important;}";
-    css += "#nc-root [class*='status-ready' i],#nc-root [class*='Ready' i]{background:rgba(16,185,129,.1)!important;color:#059669!important;}";
-
-    /* "Publish all ready entries" button at top of workflow page */
-    css += "#nc-root [class*='publishAll'],#nc-root [class*='PublishAll'],#nc-root [class*='publish-all']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 4px 16px rgba(124,58,237,.42)!important;padding:10px 22px!important;border-radius:10px!important;font-size:14px!important;}";
-
-    /* ════ MARKDOWN EDITOR TOOLBAR ═══════════════════════════════ */
-    /* Light gray strip above the markdown textarea */
-    css += "#nc-root [class*='EditorToolbar'],#nc-root [class*='editorToolbar']{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important;border-radius:12px 12px 0 0!important;padding:6px 8px!important;}";
-    css += "#nc-root [class*='EditorToolbar'] button{background:transparent!important;border:none!important;box-shadow:none!important;color:#64748b!important;border-radius:7px!important;padding:5px 9px!important;}";
+    /* ════ MARKDOWN TOOLBAR ══════════════════════════════════════ */
+    css += "#nc-root [class*='EditorToolbar']{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important;border-radius:12px 12px 0 0!important;}";
+    css += "#nc-root [class*='EditorToolbar'] button{background:transparent!important;border:none!important;box-shadow:none!important;color:#64748b!important;border-radius:6px!important;}";
     css += "#nc-root [class*='EditorToolbar'] button:hover{background:#e2e8f0!important;color:#1e293b!important;}";
-    css += "#nc-root [class*='EditorToolbar'] button[class*='active'],#nc-root [class*='EditorToolbar'] button[aria-pressed='true']{background:rgba(124,58,237,.1)!important;color:#7c3aed!important;}";
+    css += "#nc-root [class*='EditorToolbar'] button[class*='active']{background:rgba(124,58,237,.1)!important;color:#7c3aed!important;}";
 
-    /* ════ MEDIA LIBRARY ═════════════════════════════════════════ */
-    css += "#nc-root [class*='MediaLibrary'],#nc-root [class*='mediaLibrary']{background:#f0f4f8!important;border-radius:16px!important;}";
-    css += "#nc-root [class*='MediaLibrary'] img{border-radius:10px!important;transition:transform .2s,box-shadow .2s!important;}";
-    css += "#nc-root [class*='MediaLibrary'] img:hover{transform:scale(1.04)!important;box-shadow:0 8px 24px rgba(0,0,0,.15)!important;}";
+    /* ════ EDITORIAL WORKFLOW BOARD ══════════════════════════════ */
+    css += "#nc-root [class*='WorkflowCard'],#nc-root [class*='DraggableCard']{background:#fff!important;border-radius:12px!important;border:1px solid rgba(226,232,240,.9)!important;box-shadow:0 2px 8px rgba(0,0,0,.05)!important;}";
+    css += "#nc-root [class*='WorkflowCard']:hover{box-shadow:0 6px 20px rgba(0,0,0,.1)!important;transform:translateY(-2px)!important;}";
+    /* Status colour pills */
+    css += "#nc-root [class*='status-draft']{background:rgba(100,116,139,.1)!important;color:#64748b!important;}";
+    css += "#nc-root [class*='status-pending']{background:rgba(245,158,11,.1)!important;color:#d97706!important;}";
+    css += "#nc-root [class*='status-ready']{background:rgba(16,185,129,.1)!important;color:#059669!important;}";
+    /* Publish-all button at top of workflow page */
+    css += "#nc-root [class*='publishAll'],#nc-root [class*='PublishAll']{background:linear-gradient(135deg,#7c3aed,#6d28d9)!important;color:#fff!important;border:none!important;box-shadow:0 3px 14px rgba(124,58,237,.4)!important;}";
 
-    /* Upload dropzone */
-    css += "#nc-root [class*='Dropzone'],#nc-root [class*='dropzone'],#nc-root [class*='DropArea'],#nc-root [class*='ImageUpload']{border:2px dashed rgba(124,58,237,.38)!important;border-radius:14px!important;background:rgba(124,58,237,.04)!important;transition:border-color .2s,background .2s!important;}";
-    css += "#nc-root [class*='Dropzone']:hover,#nc-root [class*='dropzone']:hover{border-color:#7c3aed!important;background:rgba(124,58,237,.08)!important;}";
-
-    /* Upload progress bar */
-    css += "#nc-root [class*='progress'],#nc-root [class*='Progress']{background:rgba(124,58,237,.12)!important;border-radius:99px!important;overflow:hidden!important;}";
-    css += "#nc-root [class*='progress'] > *,#nc-root [class*='Progress'] > *{background:linear-gradient(90deg,#7c3aed,#a855f7)!important;border-radius:99px!important;transition:width .3s ease!important;}";
-
-    /* ════ MODALS & OVERLAYS ════════════════════════════════════ */
-    css += "#nc-root [class*='Modal'],#nc-root [role='dialog'],#nc-root [class*='Dialog']{border-radius:20px!important;box-shadow:0 32px 96px rgba(0,0,0,.35)!important;}";
-    css += "#nc-root [class*='Overlay'],#nc-root [class*='Backdrop']{background:rgba(4,0,26,.72)!important;backdrop-filter:blur(8px)!important;}";
-
-    /* ── Toasts ── */
-    css += "#nc-root [class*='Toast'],#nc-root [class*='toast'],#nc-root [class*='Notification'],#nc-root [class*='Alert']{border-radius:14px!important;font-size:13px!important;font-weight:500!important;box-shadow:0 12px 40px rgba(0,0,0,.25)!important;}";
-
-    /* ── Dropdown menus ── */
-    css += "#nc-root [role='menu'],#nc-root [class*='Dropdown'],#nc-root [class*='dropdown']{background:#1e293b!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:12px!important;box-shadow:0 20px 60px rgba(0,0,0,.45)!important;backdrop-filter:blur(12px)!important;padding:6px!important;}";
-    css += "#nc-root [role='menuitem'],#nc-root [class*='MenuItem']{color:rgba(255,255,255,.75)!important;border-radius:8px!important;font-size:13px!important;transition:background .12s!important;}";
+    /* ════ MEDIA, MODAL, TOAST, DROPDOWN ════════════════════════ */
+    css += "#nc-root [class*='Dropzone'],#nc-root [class*='dropzone']{border:2px dashed rgba(124,58,237,.35)!important;border-radius:14px!important;background:rgba(124,58,237,.03)!important;}";
+    css += "#nc-root [class*='Dropzone']:hover{border-color:#7c3aed!important;background:rgba(124,58,237,.07)!important;}";
+    css += "#nc-root [class*='Modal'],#nc-root [role='dialog']{border-radius:20px!important;box-shadow:0 28px 80px rgba(0,0,0,.3)!important;}";
+    css += "#nc-root [class*='Overlay'],#nc-root [class*='Backdrop']{background:rgba(4,0,26,.7)!important;backdrop-filter:blur(8px)!important;}";
+    css += "#nc-root [role='menu'],#nc-root [class*='Dropdown']{background:#1e293b!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:12px!important;box-shadow:0 20px 60px rgba(0,0,0,.4)!important;padding:6px!important;}";
+    css += "#nc-root [role='menuitem']{color:rgba(255,255,255,.75)!important;border-radius:8px!important;}";
     css += "#nc-root [role='menuitem']:hover{background:rgba(139,92,246,.2)!important;color:#fff!important;}";
-
-    /* ── Tags / badges ── */
-    css += "#nc-root [class*='Badge'],#nc-root [class*='Tag'],#nc-root [class*='Chip'],#nc-root [class*='badge']{background:rgba(124,58,237,.1)!important;color:#7c3aed!important;border-radius:6px!important;padding:3px 9px!important;font-size:11px!important;font-weight:700!important;}";
-
-    /* ── Collapse / accordion ── */
-    css += "#nc-root [class*='Collapse'],#nc-root [class*='Accordion']{border-radius:12px!important;border:1px solid rgba(226,232,240,.8)!important;background:#fff!important;overflow:hidden!important;margin-bottom:8px!important;}";
-
-    /* ── Headings ── */
-    css += "#nc-root h1,#nc-root h2,#nc-root h3{letter-spacing:-.03em!important;color:#0f172a!important;}";
-
-    /* ── Loading spinner purple ── */
-    css += "#nc-root [class*='Spinner'],#nc-root [class*='spinner']{border-top-color:#7c3aed!important;}";
+    css += "#nc-root [class*='Toast'],#nc-root [class*='Notification']{border-radius:14px!important;font-size:13px!important;font-weight:500!important;box-shadow:0 12px 40px rgba(0,0,0,.22)!important;}";
 
     var s = document.createElement("style");
     s.id = "dm-cms-override";
@@ -1108,6 +1055,125 @@
       }
     });
     CMS.registerPreviewTemplate("blog", BlogPreview);
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     NETLIFY DEPLOY HOOK — one-click single deployment
+     Hook URL is stored in localStorage so it only needs to be
+     entered once. Get it from:
+     Netlify → Site → Settings → Build & Deploy → Build hooks
+  ════════════════════════════════════════════════════════════ */
+  function deployNow(btn) {
+    var url = localStorage.getItem("dm_deploy_hook");
+    if (!url) {
+      /* Show setup modal on first use */
+      showDeploySetup(btn);
+      return;
+    }
+    runDeploy(btn, url);
+  }
+
+  function runDeploy(btn, url) {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML =
+        '<svg width="13" height="13" viewBox="0 0 13 13" style="animation:spin .8s linear infinite;transform-origin:center">' +
+        '<circle cx="6.5" cy="6.5" r="5" stroke="rgba(255,255,255,.35)" stroke-width="2" fill="none"/>' +
+        '<path d="M6.5 1.5 a5 5 0 0 1 5 5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+        "</svg> Deploying…";
+    }
+    fetch(url, { method: "POST" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("bad response");
+        if (btn) {
+          btn.classList.add("success");
+          btn.innerHTML = "✓ Deploy triggered";
+          setTimeout(function () {
+            btn.disabled = false;
+            btn.classList.remove("success");
+            btn.innerHTML =
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Deploy Now';
+          }, 4000);
+        }
+      })
+      .catch(function () {
+        if (btn) {
+          btn.classList.add("error");
+          btn.innerHTML = "⚠ Hook failed — check URL";
+          setTimeout(function () {
+            btn.disabled = false;
+            btn.classList.remove("error");
+            btn.innerHTML =
+              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Deploy Now';
+            /* Clear saved URL so they can re-enter on next click */
+            localStorage.removeItem("dm_deploy_hook");
+          }, 4000);
+        }
+      });
+  }
+
+  function showDeploySetup(btn) {
+    /* Create a minimal modal asking for the hook URL */
+    var overlay = document.createElement("div");
+    overlay.id = "deploy-modal";
+    overlay.style.cssText =
+      "position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;" +
+      "background:rgba(4,0,26,.75);backdrop-filter:blur(10px);";
+
+    overlay.innerHTML =
+      '<div style="background:#0d1117;border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:36px;max-width:480px;width:90%;box-shadow:0 32px 96px rgba(0,0,0,.5);">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+          '<div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:16px;">🚀</div>' +
+          '<h2 style="font-family:Inter,sans-serif;font-size:17px;font-weight:800;color:#f1f5f9;letter-spacing:-.03em;margin:0;">Set Up One-Click Deploy</h2>' +
+        "</div>" +
+        '<p style="font-family:Inter,sans-serif;font-size:13px;color:rgba(241,245,249,.55);line-height:1.6;margin:0 0 20px;">' +
+          'Paste your Netlify Build Hook URL below. Get it from:<br>' +
+          '<span style="color:#a78bfa;">Netlify → Your Site → Settings → Build &amp; Deploy → Build hooks → Add build hook</span>' +
+        "</p>" +
+        '<input id="deploy-hook-input" type="url" placeholder="https://api.netlify.com/build_hooks/…" ' +
+          'style="width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;' +
+          'color:#f1f5f9;font-family:Inter,sans-serif;font-size:13px;padding:11px 14px;margin-bottom:16px;outline:none;box-sizing:border-box;">' +
+        '<div style="display:flex;gap:10px;justify-content:flex-end;">' +
+          '<button onclick="document.getElementById(\'deploy-modal\').remove()" ' +
+            'style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:9px;' +
+            'color:rgba(255,255,255,.6);font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:9px 18px;cursor:pointer;">Cancel</button>' +
+          '<button id="deploy-save-btn" ' +
+            'style="background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:9px;' +
+            'color:#fff;font-family:Inter,sans-serif;font-weight:700;font-size:13px;padding:9px 20px;cursor:pointer;box-shadow:0 3px 12px rgba(5,150,105,.4);">Save &amp; Deploy</button>' +
+        "</div>" +
+      "</div>";
+
+    document.body.appendChild(overlay);
+
+    /* Focus the input */
+    setTimeout(function () {
+      var inp = document.getElementById("deploy-hook-input");
+      if (inp) inp.focus();
+    }, 60);
+
+    /* Save & Deploy handler */
+    document.getElementById("deploy-save-btn").onclick = function () {
+      var inp = document.getElementById("deploy-hook-input");
+      var val = inp ? inp.value.trim() : "";
+      if (!val || val.indexOf("netlify") === -1) {
+        inp.style.borderColor = "#ef4444";
+        inp.placeholder = "Please enter a valid Netlify build hook URL";
+        return;
+      }
+      localStorage.setItem("dm_deploy_hook", val);
+      overlay.remove();
+      runDeploy(btn, val);
+    };
+
+    /* Close on backdrop click */
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    /* Close on Escape */
+    document.addEventListener("keydown", function esc(e) {
+      if (e.key === "Escape") { overlay.remove(); document.removeEventListener("keydown", esc); }
+    });
   }
   </script>
 </body>
