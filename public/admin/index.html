@@ -826,13 +826,14 @@
         if (!nc) return;
         mo.disconnect();
 
-        /* Inject comprehensive CMS styles immediately */
         injectCMSStyles();
 
         /* Give CMS a moment to fully render, then hide overlay + navigate */
         setTimeout(function () {
           hideOverlay();
           if (hash) window.location.hash = hash;
+          /* Start direct DOM styling after CMS is fully painted */
+          setTimeout(startCMSStyling, 600);
         }, 700);
       });
       mo.observe(document.body, { childList: true, subtree: false });
@@ -869,6 +870,143 @@
       requestAnimationFrame(function () { db.style.opacity = "1"; });
       setTimeout(function () { db.style.transition = ""; }, 450);
     }
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     DIRECT DOM STYLING — applied via element.style so React
+     CSS-in-JS cannot override us. Re-applied via MutationObserver
+     every time the CMS re-renders a component.
+  ════════════════════════════════════════════════════════════ */
+  var _cmsStyleObserver = null;
+
+  function startCMSStyling() {
+    var root = document.getElementById("nc-root");
+    if (!root) return;
+
+    var _busy = false;
+
+    function set(el, prop, val) {
+      if (el && el.style[prop] !== val) el.style.setProperty(prop, val, "important");
+    }
+
+    function applyAll() {
+      if (_busy) return;
+      _busy = true;
+      var root = document.getElementById("nc-root");
+      if (!root) { _busy = false; return; }
+
+      /* ── Root background ── */
+      set(root, "background", "#f4f6f9");
+
+      /* ── HEADER — white, clean ── */
+      var hdr = root.querySelector("header");
+      if (hdr) {
+        set(hdr, "background", "#ffffff");
+        set(hdr, "border-bottom", "1px solid #e8ecf0");
+        set(hdr, "box-shadow", "0 1px 6px rgba(0,0,0,.06)");
+        /* Text inside header → dark slate */
+        hdr.querySelectorAll("a, span, label, p").forEach(function(el) {
+          set(el, "color", "#334155");
+        });
+        /* SVG icons → slate */
+        hdr.querySelectorAll("svg path, svg rect, svg circle").forEach(function(el) {
+          set(el, "fill", "#64748b");
+        });
+        /* Active nav tab → purple */
+        hdr.querySelectorAll("[class*='active'], [aria-selected='true']").forEach(function(el) {
+          set(el, "color", "#7c3aed");
+          set(el, "border-bottom-color", "#7c3aed");
+        });
+      }
+
+      /* ── SIDEBAR — deep navy gradient ── */
+      var sidebar = root.querySelector("aside") ||
+                    root.querySelector("[role='navigation']") ||
+                    root.querySelector("nav");
+      if (sidebar) {
+        sidebar.style.setProperty("background",
+          "linear-gradient(180deg,#1e2d4a 0%,#1a2640 100%)", "important");
+        set(sidebar, "border-right", "none");
+        set(sidebar, "box-shadow", "3px 0 20px rgba(0,0,0,.2)");
+
+        /* All nav text → muted white */
+        sidebar.querySelectorAll("a, span, p, li, button").forEach(function(el) {
+          set(el, "color", "rgba(203,213,225,.75)");
+        });
+        /* Active item → white + purple highlight */
+        sidebar.querySelectorAll("[class*='active'], [aria-current]").forEach(function(el) {
+          set(el, "color", "#ffffff");
+          set(el, "background", "rgba(124,58,237,.35)");
+          set(el, "border-radius", "8px");
+          set(el, "font-weight", "600");
+        });
+        /* Sidebar SVG icons */
+        sidebar.querySelectorAll("svg path, svg rect").forEach(function(el) {
+          set(el, "fill", "rgba(203,213,225,.5)");
+        });
+        /* Search input */
+        sidebar.querySelectorAll("input").forEach(function(el) {
+          set(el, "background", "rgba(255,255,255,.07)");
+          set(el, "border", "1px solid rgba(255,255,255,.1)");
+          set(el, "color", "#ffffff");
+          set(el, "border-radius", "8px");
+        });
+      }
+
+      /* ── MAIN CONTENT AREA — light gray ── */
+      var main = root.querySelector("main") ||
+                 root.querySelector("[role='main']");
+      if (main) set(main, "background", "#f4f6f9");
+
+      /* ── ENTRY CARDS — white with shadow ── */
+      root.querySelectorAll("[class*='ListItem'], [class*='EntryCard']").forEach(function(el) {
+        set(el, "background", "#ffffff");
+        set(el, "border", "1px solid #e8ecf0");
+        set(el, "border-radius", "12px");
+        set(el, "box-shadow", "0 1px 4px rgba(30,45,74,.07)");
+      });
+
+      /* ── EDITOR FORM PANES — white ── */
+      root.querySelectorAll("[class*='ControlPane'], [class*='EditorContainer']").forEach(function(el) {
+        set(el, "background", "#ffffff");
+        set(el, "border-radius", "14px");
+        set(el, "border", "1px solid #e8ecf0");
+        set(el, "box-shadow", "0 2px 10px rgba(30,45,74,.07)");
+      });
+
+      /* ── MODALS — white card ── */
+      root.querySelectorAll("[role='dialog'], [class*='Modal']").forEach(function(el) {
+        set(el, "background", "#ffffff");
+        set(el, "border-radius", "18px");
+        set(el, "border", "1px solid #e8ecf0");
+        set(el, "box-shadow", "0 24px 80px rgba(30,45,74,.22)");
+      });
+
+      /* ── DROPDOWNS — white ── */
+      root.querySelectorAll("[role='menu'], [class*='Dropdown']").forEach(function(el) {
+        set(el, "background", "#ffffff");
+        set(el, "border", "1px solid #e8ecf0");
+        set(el, "border-radius", "12px");
+        set(el, "box-shadow", "0 16px 48px rgba(30,45,74,.16)");
+      });
+      root.querySelectorAll("[role='menuitem']").forEach(function(el) {
+        set(el, "color", "#334155");
+      });
+
+      _busy = false;
+    }
+
+    /* Apply immediately and on every CMS DOM change */
+    applyAll();
+
+    if (_cmsStyleObserver) _cmsStyleObserver.disconnect();
+    _cmsStyleObserver = new MutationObserver(function() {
+      requestAnimationFrame(applyAll);
+    });
+    _cmsStyleObserver.observe(root, {
+      childList: true, subtree: true,
+      attributes: true, attributeFilter: ["class", "style"]
+    });
   }
 
   /* ════════════════════════════════════════════════════════════
