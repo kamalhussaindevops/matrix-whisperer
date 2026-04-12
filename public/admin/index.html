@@ -1072,7 +1072,6 @@
   ════════════════════════════════════════════════════════════ */
   var GH_OWNER = "kamalhussaindevops";
   var GH_REPO  = "matrix-whisperer";
-  var GH_FILE  = ".deploy-trigger";
 
   var DEPLOY_ICON =
     '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
@@ -1094,55 +1093,55 @@
   function runDeploy(btn, token) {
     if (btn) { btn.disabled = true; btn.innerHTML = SPIN_ICON + " Deploying…"; }
 
-    /* Step 1: get current SHA of .deploy-trigger (needed for update API) */
-    fetch("https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + GH_FILE, {
-      headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" }
-    })
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(existing) {
-      /* Step 2: write new timestamp to .deploy-trigger */
-      var body = {
-        message: "deploy: trigger production build",
-        content: btoa(new Date().toISOString() + "\n")
-      };
-      if (existing && existing.sha) body.sha = existing.sha;
-
-      return fetch(
-        "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + GH_FILE,
-        {
-          method: "PUT",
-          headers: {
-            "Authorization": "Bearer " + token,
-            "Accept": "application/vnd.github+json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(body)
-        }
-      );
+    /* Merge main → production. Netlify watches production branch only,
+       so CMS commits to main never trigger a build. Only this merge does. */
+    fetch("https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/merges", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        base: "production",
+        head: "main",
+        commit_message: "deploy: publish all changes to production"
+      })
     })
     .then(function(r) {
-      if (r.status === 401) throw new Error("401: Token is invalid or expired. Please revoke it on GitHub and create a new one.");
-      if (r.status === 403) throw new Error("403: Token doesn't have 'Contents: Read and write' permission for this repo.");
-      if (r.status === 404) throw new Error("404: Repo not found. Check the token has access to the matrix-whisperer repo.");
-      if (!r.ok) throw new Error("GitHub API error " + r.status + ". Check browser console for details.");
+      if (r.status === 401) throw new Error("401: Token is invalid or expired. Please revoke it and create a new one on GitHub.");
+      if (r.status === 403) throw new Error("403: Token missing 'Contents: Read and write' permission for this repo.");
+      if (r.status === 404) throw new Error("404: Branch 'production' not found. Please re-run setup.");
+      if (r.status === 409) throw new Error("409: Merge conflict between main and production. Please resolve in GitHub.");
+      /* 204 = already up to date, nothing new to deploy — that's fine */
+      if (r.status === 204) {
+        if (btn) {
+          btn.innerHTML = "✓ Already up to date";
+          setTimeout(function() {
+            btn.disabled = false;
+            btn.innerHTML = DEPLOY_ICON + " Deploy Now";
+          }, 3000);
+        }
+        return;
+      }
+      if (!r.ok) throw new Error("GitHub API error " + r.status);
+      /* 201 = merge commit created → Netlify will now build production */
       if (btn) {
         btn.classList.add("success");
-        btn.innerHTML = "✓ Deploy triggered";
+        btn.innerHTML = "✓ Deploying to production…";
         setTimeout(function() {
           btn.disabled = false;
           btn.classList.remove("success");
           btn.innerHTML = DEPLOY_ICON + " Deploy Now";
-        }, 5000);
+        }, 6000);
       }
     })
     .catch(function(err) {
       console.error("Deploy error:", err);
       localStorage.removeItem("dm_gh_token");
-      /* Show the real error message so user knows what to fix */
       alert("Deploy failed:\n\n" + err.message + "\n\nYour token has been cleared. Click Deploy Now to enter a new one.");
       if (btn) {
         btn.disabled = false;
-        btn.classList.remove("error");
         btn.innerHTML = DEPLOY_ICON + " Deploy Now";
       }
     });
